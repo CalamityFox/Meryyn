@@ -7,19 +7,9 @@
 
 </div>
 
-<div align="center">
-
-### <img src="media/favicon.gif" width="25"/><img src="media/favicon.gif" width="25"/><img src="media/favicon.gif" width="25"/><img src="media/favicon.gif" width="25"/><img src="media/favicon.gif" width="25"/><img src="media/favicon.gif" width="25"/><img src="media/favicon.gif" width="25"/><img src="media/favicon.gif" width="25"/>
-
-### WORK IN PROGRESS // WORK IN PROGRESS // WORK IN PROGRESS // WORK IN PROGRESS // WORK IN PROGRESS // WORK IN PROGRESS // WORK IN PROGRESS // WORK IN PROGRESS // WORK IN PROGRESS // WORK IN PROGRESS
-
-### <img src="media/favicon.gif" width="25"/><img src="media/favicon.gif" width="25"/><img src="media/favicon.gif" width="25"/><img src="media/favicon.gif" width="25"/><img src="media/favicon.gif" width="25"/><img src="media/favicon.gif" width="25"/><img src="media/favicon.gif" width="25"/><img src="media/favicon.gif" width="25"/>
-
-</div>
-
 # <img src="media/favicon.gif" width="25"/> What is this?
 
-I want to get better at basic development, and I've always had some issue with various pre-existing distros, so I'm making one for myself. If it ends up working well I might consider making it a "proper" distro, but for now this is purely a personal project.
+I've always had some issue with various pre-existing distros, so I'm making one for myself. If it ends up working well I might consider making it a "proper" distro, but for now this is purely a personal project.
 
 It uses [`niri`](https://github.com/niri-wm/niri) with [`noctalia`](https://noctalia.dev/shell). For a list of all⁽¹⁾ pre-installed software, see [below](README.md#-pre-installed-software).
 
@@ -55,17 +45,35 @@ ISO builds will happen... at some point. Right now I'm working on other things f
 
 `Risk` comes with some applications pre-installed. Those labelled as `RPM` cannot be uninstalled⁽²⁾, as they're part of the immutable system image. All other apps are packaged as Flatpaks and can be removed through the software manager:
 
+- [`bazaar`](https://apps.gnome.org/Bazaar) App store
+- [`file-roller`](https://gitlab.gnome.org/GNOME/file-roller) Archive utility
+- [`flatseal`](https://github.com/tchx84/Flatseal) Flatpak permission manager
+- [`foliate`](https://johnfactotum.github.io/foliate) E-book reader
+- [`fragments`](https://apps.gnome.org/Fragments) Torrent client
+- [`gnome-calculator`](https://apps.gnome.org/Calculator)
+- [`gnome-text-editor`](https://apps.gnome.org/TextEditor)
+- [`gnome-weather`](https://apps.gnome.org/Weather)
+- [`iotas`](https://apps.gnome.org/Iotas) Notes
+- [`impression`](https://apps.gnome.org/Impression) ISO flasher
+- [`libreoffice`](https://www.libreoffice.org) Office suite
 - [`librewolf`](https://librewolf.net) browser
 - [`loupe`](https://apps.gnome.org/Loupe) image viewer
 - [`nautilus`](https://apps.gnome.org/Nautilus) file manager (RPM)
+- [`niri`](https://niri-wm.github.io/niri/index.html) window manager (RPM)
+- [`noctalia`](https://noctalia.dev/shell) shell (RPM)
+- [`pikabackup`](https://apps.gnome.org/PikaBackup)
+- [`ptyxis`](https://gitlab.gnome.org/chergert/ptyxis) Terminal
+- [`sddm`](https://github.com/sddm/sddm) display manager (RPM)
+- [`secrets`](https://apps.gnome.org/Secrets) KeePass password manager
 - [`showtime`](https://apps.gnome.org/Showtime) video player
 - [`thunderbird`](https://www.thunderbird.net) e-mail client 
+- [`warp`](https://apps.gnome.org/Warp/) File sharing
 
 To install additional software, use [Flathub](https://flathub.org) where possible. If a package isn't available on Flathub, you can layer it with `rpm-ostree install $PACKAGE` (not recommended), or use [`distrobox`](https://distrobox.it).
 
 # <img src="media/favicon.gif" width="25"/> Notes
 
-⁽¹⁾The list may be slightly behind actual changes. For a fully up-to-date list, see the [`build.sh`](build_files/build.sh)
+⁽¹⁾The list may be slightly behind actual changes. For a fully up-to-date list, see the [`Containerfile`](Containerfile)
 
 ⁽²⁾Technically you can uninstall RPMs with `rpm-ostree override remove $PACKAGE` but this isn't recommended outside of the build process since it can cause system instability. 
 
