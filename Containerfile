@@ -23,6 +23,7 @@ dnf5 install -y https://download1.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree
 installRPM=(
  niri # Window manager
  noctalia # Shell
+ plymouth
  sddm # Display manager
 )
 dnf5 install -y "${installRPM[@]}"
@@ -77,9 +78,12 @@ flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.f
 flatpak install -y --noninteractive flathub "${installFLATPAK[@]}"
 
 
+# ========== miscellanious ==========
+
+
 # ========== verify image ==========
 bootc container lint
 
-
+dracut -f
 EOT
 
