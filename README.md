@@ -1,7 +1,7 @@
 <div align="center">
 <img src="media/logo.png" width="250"/>
 
-<img src="media/handcoded.png" width="100"/> <img src="media/theythem.png" width="100"/>
+<img src="media/handcoded.png" height="50"/> <img src="media/theythem.png" height="16"/>
 
 [`rpm-ostree`](https://coreos.github.io/rpm-ostree)/[`bootc`](https://bootc.dev) system based on [Universal Blue](https://universal-blue.org)
 
@@ -11,19 +11,19 @@
 
 I've always had some issue with various pre-existing distros, so I'm making one for myself. If it ends up working well I might consider making it a "proper" distro, but for now this is purely a personal project.
 
-It uses [`niri`](https://github.com/niri-wm/niri) with [`noctalia`](https://noctalia.dev/shell). For a list of all⁽¹⁾ pre-installed software, see [below](README.md#-pre-installed-software).
+It uses [`niri`](https://github.com/niri-wm/niri) with [`noctalia`](https://noctalia.dev/shell).
 
 # <img src="media/favicon.gif" width="25"/> How it works
 
-All customisations are kept within the [`Containerfile`](Containerfile) and the [`/sysfiles`](sysfiles) directory.
+All of **Risk**'s customisations are kept within the [`Containerfile`](Containerfile) and the [`/sysfiles`](sysfiles) directory.
 
 The `Containerfile` obtains the latest [Silverblue](https://fedoraproject.org/atomic-desktops/silverblue) image and modifies it according to the options laid out in the `Containerfile`.
 
-All files from [`/sysfiles`](sysfiles) are copied to `/` on the `Risk` system. If the file already exists, it is overwritten.
+[`/sysfiles/*`](sysfiles) is copied to `/` on the **Risk** system
+.
+**Risk** comes with various pre-installed applications. All but `niri`, `noctalia` and `sddm` can be removed, either through [Bazaar](https://apps.gnome.org/Bazaar) or with `flatpak remove $PACKAGE`. Additional software can be installed via [Flathub](https://flathub.org). If a package isn't available as a Flatpak, you can layer the RPM with `rpm-ostree install $PACKAGE && systemctl reboot` or through [`distrobox`](https://distrobox.it).
 
 # <img src="media/favicon.gif" width="25"/> Installation
-
-If you for some reason want to install this random assortment of code held together with duct tape and paperclips:
 
 ### Rebasing
 
@@ -40,46 +40,6 @@ sudo bootc switch --enforce-container-sigpolicy ghcr.io/calamityfox/risk:latest
 
 ### Fresh install
 ISO builds will happen... at some point. Right now I'm working on other things first
-
-# <img src="media/favicon.gif" width="25"/> Pre-installed software
-
-`Risk` comes with some applications pre-installed. Those labelled as `RPM` cannot be uninstalled⁽²⁾, as they're part of the immutable system image. All other apps are packaged as Flatpaks and can be removed through the software manager:
-
-- [`bazaar`](https://apps.gnome.org/Bazaar) App store
-- [`file-roller`](https://gitlab.gnome.org/GNOME/file-roller) Archive utility
-- [`flatseal`](https://github.com/tchx84/Flatseal) Flatpak permission manager
-- [`foliate`](https://johnfactotum.github.io/foliate) E-book reader
-- [`fragments`](https://apps.gnome.org/Fragments) Torrent client
-- [`gnome-calculator`](https://apps.gnome.org/Calculator)
-- [`gnome-text-editor`](https://apps.gnome.org/TextEditor)
-- [`gnome-weather`](https://apps.gnome.org/Weather)
-- [`iotas`](https://apps.gnome.org/Iotas) Notes
-- [`impression`](https://apps.gnome.org/Impression) ISO flasher
-- [`libreoffice`](https://www.libreoffice.org) Office suite
-- [`librewolf`](https://librewolf.net) browser
-- [`loupe`](https://apps.gnome.org/Loupe) image viewer
-- [`nautilus`](https://apps.gnome.org/Nautilus) file manager (RPM)
-- [`niri`](https://niri-wm.github.io/niri/index.html) window manager (RPM)
-- [`noctalia`](https://noctalia.dev/shell) shell (RPM)
-- [`pikabackup`](https://apps.gnome.org/PikaBackup)
-- [`ptyxis`](https://gitlab.gnome.org/chergert/ptyxis) Terminal
-- [`sddm`](https://github.com/sddm/sddm) display manager (RPM)
-- [`secrets`](https://apps.gnome.org/Secrets) KeePass password manager
-- [`showtime`](https://apps.gnome.org/Showtime) video player
-- [`thunderbird`](https://www.thunderbird.net) e-mail client 
-- [`warp`](https://apps.gnome.org/Warp/) File sharing
-
-To install additional software, use [Flathub](https://flathub.org) where possible. If a package isn't available on Flathub, you can layer it with `rpm-ostree install $PACKAGE` (not recommended), or use [`distrobox`](https://distrobox.it).
-
-# <img src="media/favicon.gif" width="25"/> Notes
-
-⁽¹⁾The list may be slightly behind actual changes. For a fully up-to-date list, see the [`Containerfile`](Containerfile)
-
-⁽²⁾Technically you can uninstall RPMs with `rpm-ostree override remove $PACKAGE` but this isn't recommended outside of the build process since it can cause system instability. 
-
-⁽³⁾ ⁽⁴⁾
-
-
 
 # <img src="media/favicon.gif" width="25"/> Contact
 
