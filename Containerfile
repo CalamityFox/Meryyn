@@ -12,7 +12,8 @@ RUN <<-'EOT' sh
 set -ouex pipefail
 # cp -avf "ctx/sysfiles" /
 systemctl enable podman.socket
- 
+
+
 # ========== enable RPM-Fusion ==========
 dnf5 install -y https://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm
 dnf5 install -y https://download1.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm
@@ -31,9 +32,6 @@ dnf5 install -y "${installRPM[@]}"
 removeRPM=(
  alacritty
  fuzzel
- swaylock
- waybar
-
  gdm
  gnome-browser-connector
  gnome-classic-session
@@ -46,6 +44,8 @@ removeRPM=(
  gnome-shell-extension-launch-new-instance
  gnome-shell-extension-places-menu
  gnome-shell-extension-window-list
+ swaylock
+ waybar
 )
 rpm-ostree override remove "${removeRPM[@]}"
 
@@ -76,8 +76,10 @@ installFLATPAK=(
 flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
 flatpak install -y --noninteractive flathub "${installFLATPAK[@]}"
 
+
 # ========== verify image ==========
 bootc container lint
-# ===
+
+
 EOT
 
