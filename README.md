@@ -1,15 +1,13 @@
 <div align="center">
-<img src="media/logo.png" width="250"/>
+<img src="media/logo.svg" width="300"/>
 
-<img src="media/handcoded.png" height="50"/> <img src="media/theythem.png" height="16"/>
 
-[`rpm-ostree`](https://coreos.github.io/rpm-ostree)/[`bootc`](https://bootc.dev) system based on [Universal Blue](https://universal-blue.org)
-
+<img src="media/handcoded.png" height="50"/>
 </div>
 
 # <img src="media/favicon.gif" width="25"/> What is this?
 
-I've always had some issue with various pre-existing distros, so I'm making one for myself. If it ends up working well I might consider making it a "proper" distro, but for now this is purely a personal project.
+**Risk** is an [`rpm-ostree`](https://coreos.github.io/rpm-ostree)/[`bootc`](https://bootc.dev) system based on [Universal Blue](https://universal-blue.org). I've always had some issue with various pre-existing distros, so I'm making one for myself. If it ends up working well I might consider making it a "proper" distro, but for now this is purely a personal project.
 
 It uses [`niri`](https://github.com/niri-wm/niri) with [`noctalia`](https://noctalia.dev/shell).
 
