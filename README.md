@@ -1,27 +1,26 @@
 <div align="center">
 <img src="misc/media/logo.svg" width="256"/>
 
+**[rpm-ostree](https://coreos.github.io/rpm-ostree)/[bootc](https://bootc.dev) system with [niri](https://github.com/niri-wm/niri) and [noctalia](https://noctalia.dev/shell)**
 
 <img src="misc/media/handcoded.png" height="50"/> <img src="misc/media/lgbtfriendly.gif" height="50"/> 
 </div>
 
-# <img src="misc/media/favicon.gif" width="25"/> What is this?
+# <img src="misc/media/flower.png" width="25"/> How it works
 
-**Risk** is an [`rpm-ostree`](https://coreos.github.io/rpm-ostree)/[`bootc`](https://bootc.dev) system based on [Universal Blue](https://universal-blue.org), with [`niri`](https://github.com/niri-wm/niri) and [`noctalia`](https://noctalia.dev/shell)'s shell.
+All of `Risk`'s customisations are kept within the [**Containerfile**](Containerfile) and the [**/system**](system) directory.
 
-This is a work-in-progress. If it ends up working well I might consider making it a "proper" distro, but for now this is purely a personal project.
+[**build.yml**](.github/workflows/build.yml) obtains the latest [Silverblue](https://fedoraproject.org/atomic-desktops/silverblue) image and modifies it according to the options laid out in the **Containerfile**.
 
-# <img src="misc/media/favicon.gif" width="25"/> How it works
+**/system** is copied to **/** on the `Risk` system.
 
-All of **Risk**'s customisations are kept within the [`Containerfile`](Containerfile) and the [`/sysfiles`](sysfiles) directory.
+# <img src="misc/media/flower.png" width="25"/> Pre-installed apps
 
-The `Containerfile` obtains the latest [Silverblue](https://fedoraproject.org/atomic-desktops/silverblue) image and modifies it according to the options laid out in the `Containerfile`.
+`Risk` comes with various pre-installed applications, such as the [LibreWolf](https://librewolf.net) browser, [Thunderbird](https://thunderbird.net) e-mail client, and various [GNOME](https://apps.gnome.org) apps for basic functionality. For a full list of all software included in `Risk`, check the [**Containerfile**](Containerfile). All included software except for the display manager, window manager, and shell can be removed with [Bazaar](https://apps.gnome.org/Bazaar) or the command-line. 
 
-[`/sysfiles/*`](sysfiles) is copied to `/` on the **Risk** system
-.
-**Risk** comes with various pre-installed applications. All but `niri`, `noctalia` and `sddm` can be removed, either through [Bazaar](https://apps.gnome.org/Bazaar) or with `flatpak remove $PACKAGE`. Additional software can be installed via [Flathub](https://flathub.org). If a package isn't available as a Flatpak, you can layer the RPM with `rpm-ostree install $PACKAGE && systemctl reboot` or through [`distrobox`](https://distrobox.it).
+Additional software can be installed with [Bazaar](https://apps.gnome.org/Bazaar). If a package isn't available as a [Flatpak](https://flathub.org), you can [layer](https://docs.fedoraproject.org/en-US/atomic-desktops/getting-started/#package-layering) RPMs or use [toolbx](https://containertoolbx.org/).
 
-# <img src="misc/media/favicon.gif" width="25"/> Installation
+# <img src="misc/media/flower.png" width="25"/> Installation
 
 ### Rebasing
 
@@ -39,11 +38,11 @@ sudo bootc switch --enforce-container-sigpolicy ghcr.io/calamityfox/risk:latest
 ### Fresh install
 ISO builds will happen... at some point. Right now I'm working on other things first
 
-# <img src="misc/media/favicon.gif" width="25"/> Contact
+# <img src="misc/media/flower.png" width="25"/> Contact
 
 If you encounter a bug, please report it in the [Issue Tracker](issues).
 
-For anything else, message me on [Signal](https://signal.org), my username is  [`kes.123`](https://signal.me/#eu/nM5aRSJ1kqOL0RtXQHOtgxqk6S5baJuLUNf4RxV1cu1ZIYaKd_dNBIZPvKpvRRZO) 
+For anything else, including security vulnerability disclosures, contact me at [calamityfox@purelymail.com](mailto:calamityfox@purelymail.com). You can encrypt your message with my [**age**](misc/public-key.age) or [**gpg**](misc/public-key.gpg) public keys.
 
 # 
 
