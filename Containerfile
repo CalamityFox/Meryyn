@@ -1,5 +1,5 @@
 FROM scratch AS ctx
-COPY sysfiles /sysfiles
+COPY system /system
 FROM quay.io/fedora/fedora-silverblue:latest
 
 # Other base images:
@@ -10,8 +10,6 @@ FROM quay.io/fedora/fedora-silverblue:latest
 USER root
 RUN <<-'EOT' sh
 set -ouex pipefail
-# cp -avf "ctx/sysfiles" /
-systemctl enable podman.socket
 
 
 # ========== enable RPM-Fusion ==========
@@ -79,11 +77,11 @@ flatpak install -y --noninteractive flathub "${installFLATPAK[@]}"
 
 
 # ========== miscellanious ==========
+cp -avf "ctx/system" /
+systemctl enable podman.socket
 
 
 # ========== verify image ==========
 bootc container lint
-
-dracut -f
 EOT
 
