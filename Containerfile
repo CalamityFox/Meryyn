@@ -1,5 +1,5 @@
-FROM scratch AS ctx
-COPY system /system
+# FROM scratch AS ctx
+# COPY system /system
 FROM quay.io/fedora/fedora-silverblue:latest
 
 # Other base images:
@@ -79,8 +79,8 @@ flatpak install -y --noninteractive flathub "${installFLATPAK[@]}"
 
 
 # ========== miscellanious ==========
-cp -avf "ctx/system" /
-systemctl enable podman.socket
+# cp -avf "ctx/system" /
+# systemctl enable podman.socket
 
 
 # ========== verify image ==========
