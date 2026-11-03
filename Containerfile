@@ -19,10 +19,12 @@ dnf5 install -y https://download1.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree
 
 # ========== install RPMs ==========
 installRPM=(
+ age
  niri # Window manager
  noctalia # Shell
  plymouth
  sddm # Display manager
+ yt-dlp
 )
 dnf5 install -y "${installRPM[@]}"
 
