@@ -4,7 +4,7 @@ export image_desc := env_var("")
 export image_keywords := env_var("")
 export image_logo_url := env_var("")
 export default_tag := env_var("latest")
-export bib_image := env_var("quay.io/centos-bootc/bootc-image-builder")
+# export bib_image := env_var("quay.io/centos-bootc/bootc-image-builder:latest")
 
 alias build-vm := build-qcow2
 alias rebuild-vm := rebuild-qcow2
@@ -317,7 +317,7 @@ _build-bib $target_image $tag $type $config: (_rootful_load_image target_image t
       -v $(pwd)/${config}:/config.toml:ro \
       -v $BUILDTMP:/output \
       -v /var/lib/containers/storage:/var/lib/containers/storage \
-      "${bib_image}" \
+      "quay.io/centos-bootc/bootc-image-builder:latest" \
       ${args} \
       "${target_image}:${tag}"
 
