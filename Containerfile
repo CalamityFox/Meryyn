@@ -24,6 +24,7 @@ installRPM=(
  noctalia # Shell
  plymouth
  sddm # Display manager
+ tldr
  yt-dlp
 )
 dnf5 install -y "${installRPM[@]}"
@@ -79,8 +80,8 @@ flatpak install -y --noninteractive flathub "${installFLATPAK[@]}"
 
 
 # ========== miscellanious ==========
-# cp -avf "ctx/system" /
-# systemctl enable podman.socket
+wget -r -np -P / https://github.com/CalamityFox/Risk/tree/main/system/
+systemctl enable podman.socket
 
 
 # ========== verify image ==========
