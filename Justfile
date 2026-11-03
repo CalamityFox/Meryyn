@@ -3,7 +3,7 @@ export repo_organization := env_var("calamityfox")
 export image_desc := env_var("")
 export image_keywords := env_var("")
 export image_logo_url := env_var("")
-export default_tag := env_var("")
+export default_tag := env_var("latest")
 export bib_image := env_var("quay.io/centos-bootc/bootc-image-builder:latest")
 
 alias build-vm := build-qcow2
