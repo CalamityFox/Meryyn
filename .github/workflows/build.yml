@@ -131,7 +131,7 @@ jobs:
         run: |
           set -euox pipefail
           for tag in ${ALIAS_TAGS}; do
-            podman push --digestfile=/tmp/digestfile risk:${tag} calamityfox/risk:${tag}
+            podman push --digestfile=/tmp/digestfile risk:${tag} ghcr.io/calamityfox/risk:${tag}
           done
 
           digest=$(< /tmp/digestfile)
