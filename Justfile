@@ -1,18 +1,7 @@
-# Here we set a bunch of parameters for your image build
-
-# output image name, usually same as repo name, change as needed
-IMAGE_NAME=risk
-
-# Make this the same as your github username/organisation
-REPO_ORGANIZATION="calamityfox"
-
-IMAGE_DESC=""
-IMAGE_KEYWORDS=""
-
-# Put your own image here for a fancy profile on https://artifacthub.io/!
-IMAGE_LOGO_URL=""
-DEFAULT_TAG="latest"
-BIB_IMAGE="quay.io/centos-bootc/bootc-image-builder:latest"
+IMAGE_NAME := "risk"
+REPO_ORGANIZATION := "calamityfox"
+DEFAULT_TAG := "latest"
+BIB_IMAGE := "quay.io/centos-bootc/bootc-image-builder:latest"
 
 alias build-vm := build-qcow2
 alias rebuild-vm := rebuild-qcow2
