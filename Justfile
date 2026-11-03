@@ -1,7 +1,7 @@
-IMAGE_NAME := "risk"
-REPO_ORGANIZATION := "calamityfox"
-DEFAULT_TAG := "latest"
-BIB_IMAGE := "quay.io/centos-bootc/bootc-image-builder:latest"
+image_name := "risk"
+repo_organization := "calamityfox"
+default_tag := "latest"
+bib_image := "quay.io/centos-bootc/bootc-image-builder:latest"
 
 alias build-vm := build-qcow2
 alias rebuild-vm := rebuild-qcow2
