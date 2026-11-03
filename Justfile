@@ -4,7 +4,7 @@ export image_desc := env_var("")
 export image_keywords := env_var("")
 export image_logo_url := env_var("")
 export default_tag := env_var("latest")
-export bib_image := env_var("quay.io/centos-bootc/bootc-image-builder:latest")
+export bib_image := env_var("quay.io/centos-bootc/bootc-image-builder")
 
 alias build-vm := build-qcow2
 alias rebuild-vm := rebuild-qcow2
