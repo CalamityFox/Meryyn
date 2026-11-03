@@ -1,11 +1,3 @@
-export image_name := env_var("risk")
-export repo_organization := env_var("calamityfox")
-export image_desc := env_var("")
-export image_keywords := env_var("")
-export image_logo_url := env_var("")
-export default_tag := env_var("latest")
-# export bib_image := env_var("quay.io/centos-bootc/bootc-image-builder:latest")
-
 alias build-vm := build-qcow2
 alias rebuild-vm := rebuild-qcow2
 alias run-vm := run-vm-qcow2
@@ -75,8 +67,8 @@ sudoif command *args:
 # This Justfile recipe builds a container image using Podman.
 #
 # Arguments:
-#   $target_image - The tag you want to apply to the image (default: $image_name).
-#   $tag - The tag for the image (default: $default_tag).
+#   $target_image - The tag you want to apply to the image (default: risk).
+#   $tag - The tag for the image (default: latest).
 #
 # The script constructs the version string using the tag and the current date.
 # If the git working directory is clean, it also includes the short SHA of the current HEAD.
@@ -90,7 +82,7 @@ sudoif command *args:
 #
 
 # Build the image using the specified parameters
-build $target_image=image_name $tag=default_tag:
+build $target_image=risk $tag=latest:
     #!/usr/bin/env bash
 
     set -euox pipefail
@@ -99,24 +91,13 @@ build $target_image=image_name $tag=default_tag:
     LABELS=()
     if [[ -z "$(git status -s)" ]]; then
         GIT_SHA=$(git rev-parse --short HEAD)
-        LABELS+=("--label" "io.artifacthub.package.readme-url=https://raw.githubusercontent.com/{{ repo_organization }}/{{ image_name }}/${GIT_SHA}/README.md")
-        LABELS+=("--label" "org.opencontainers.image.documentation=https://raw.githubusercontent.com/{{ repo_organization }}/{{ image_name }}/${GIT_SHA}/README.md")
-        LABELS+=("--label" "org.opencontainers.image.source=https://github.com/{{ repo_organization }}/{{ image_name }}/blob/${GIT_SHA}/Containerfile")
-        LABELS+=("--label" "org.opencontainers.image.url=https://github.com/{{ repo_organization }}/{{ image_name }}/tree/${GIT_SHA}")
-        LABELS+=("--label" "org.opencontainers.image.version={{ default_tag }}.$(date +%Y%m%d)-${GIT_SHA}")
+        LABELS+=("--label" "io.artifacthub.package.readme-url=https://raw.githubusercontent.com/{{ calamityfox }}/{{ risk }}/${GIT_SHA}/README.md")
+        LABELS+=("--label" "org.opencontainers.image.documentation=https://raw.githubusercontent.com/{{ calamityfox }}/{{ risk }}/${GIT_SHA}/README.md")
+        LABELS+=("--label" "org.opencontainers.image.source=https://github.com/{{ calamityfox }}/{{ risk }}/blob/${GIT_SHA}/Containerfile")
+        LABELS+=("--label" "org.opencontainers.image.url=https://github.com/{{ calamityfox }}/{{ risk }}/tree/${GIT_SHA}")
+        LABELS+=("--label" "org.opencontainers.image.version={{ latest }}.$(date +%Y%m%d)-${GIT_SHA}")
     fi
 
-    # Image metadata for https://artifacthub.io/ - This is optional but is highly recommended so we all can get a index of all the custom images
-    # The metadata by itself is not going to do anything, you choose if you want your image to be on ArtifactHub or not.
-    LABELS+=("--label" "io.artifacthub.package.deprecated=false")
-    LABELS+=("--label" "io.artifacthub.package.keywords={{ image_keywords }}")
-    LABELS+=("--label" "io.artifacthub.package.license=Apache-2.0")
-    LABELS+=("--label" "io.artifacthub.package.logo-url={{ image_logo_url }}")
-    LABELS+=("--label" "io.artifacthub.package.prerelease=false")
-    LABELS+=("--label" "org.opencontainers.image.created=$(date -u +%Y\-%m\-%d\T%H\:%M\:%S\Z)")
-    LABELS+=("--label" "org.opencontainers.image.description={{ image_desc }}")
-    LABELS+=("--label" "org.opencontainers.image.title={{ image_name }}")
-    LABELS+=("--label" "org.opencontainers.image.vendor={{ repo_organization }}")
 
     # This actually builds the image!
     PODMAN_BUILD_ARGS=("${BUILD_ARGS[@]}" "${LABELS[@]}" --pull=newer --tag "${target_image}:${tag}" --file Containerfile)
@@ -124,7 +105,7 @@ build $target_image=image_name $tag=default_tag:
     podman build "${PODMAN_BUILD_ARGS[@]}" .
 
 # Split the image for smaller updates (New)!
-rechunk $target_image=image_name $tag=default_tag:
+rechunk $target_image=risk $tag=latest:
     #!/usr/bin/env bash
 
     set -xeuo pipefail
@@ -160,7 +141,7 @@ rechunk $target_image=image_name $tag=default_tag:
     podman tag "${CHUNKED_IMAGE}" "${target_image}:${tag}"
 
 # Split the image for smaller updates (Classical)!
-ostree-rechunk $target_image=image_name $tag=default_tag:
+ostree-rechunk $target_image=risk $tag=latest:
     #!/usr/bin/env bash
 
     set -xeuo pipefail
@@ -185,7 +166,7 @@ ostree-rechunk $target_image=image_name $tag=default_tag:
 
 # Generate Default Tag
 [group('Utility')]
-generate-default-tag $tag=default_tag:
+generate-default-tag $tag=latest:
     #!/usr/bin/env bash
     set -eoux pipefail
 
@@ -193,7 +174,7 @@ generate-default-tag $tag=default_tag:
 
 # Generate Tags
 [group('Utility')]
-generate-build-tags $target_image=image_name $tag=default_tag:
+generate-build-tags $target_image=risk $tag=latest:
     #!/usr/bin/env bash
     set -eoux pipefail
 
@@ -214,7 +195,7 @@ generate-build-tags $target_image=image_name $tag=default_tag:
 
 # Tag Images
 [group('Utility')]
-tag-images $target_image=image_name $tag=default_tag tags="":
+tag-images $target_image=risk $tag=latest tags="":
     #!/usr/bin/env bash
     set -eoux pipefail
 
@@ -233,11 +214,11 @@ tag-images $target_image=image_name $tag=default_tag tags="":
 # Image Name
 [group('Utility')]
 [private]
-image_name $target_image=image_name:
+risk $target_image=risk:
     #!/usr/bin/env bash
     set -eoux pipefail
 
-    echo "${image_name}"
+    echo "risk"
 
 # Command: _rootful_load_image
 # Description: This script checks if the current user is root or running under sudo. If not, it attempts to resolve the image tag using podman inspect.
@@ -245,7 +226,7 @@ image_name $target_image=image_name:
 #
 # Parameters:
 #   $target_image - The name of the target image to be loaded or pulled.
-#   $tag - The tag of the target image to be loaded or pulled. Default is 'default_tag'.
+#   $tag - The tag of the target image to be loaded or pulled. Default is 'latest'.
 #
 # Example usage:
 #   _rootful_load_image my_image latest
@@ -256,7 +237,7 @@ image_name $target_image=image_name:
 # 3. If the image is found, load it into rootful podman using podman scp.
 # 4. If the image is not found, pull it from the remote repository into reootful podman.
 
-_rootful_load_image $target_image=image_name $tag=default_tag:
+_rootful_load_image $target_image=risk $tag=latest:
     #!/usr/bin/env bash
     set -eoux pipefail
 
@@ -338,27 +319,27 @@ _rebuild-bib $target_image $tag $type $config: (build target_image tag) && (_bui
 
 # Build a QCOW2 virtual machine image
 [group('Build Virtal Machine Image')]
-build-qcow2 $target_image=("localhost/" + image_name) $tag=default_tag: && (_build-bib target_image tag "qcow2" "disk_config/disk.toml")
+build-qcow2 $target_image=("localhost/" + risk) $tag=latest: && (_build-bib target_image tag "qcow2" "disk_config/disk.toml")
 
 # Build a RAW virtual machine image
 [group('Build Virtal Machine Image')]
-build-raw $target_image=("localhost/" + image_name) $tag=default_tag: && (_build-bib target_image tag "raw" "disk_config/disk.toml")
+build-raw $target_image=("localhost/" + risk) $tag=latest: && (_build-bib target_image tag "raw" "disk_config/disk.toml")
 
 # Build an ISO virtual machine image
 [group('Build Virtal Machine Image')]
-build-iso $target_image=("localhost/" + image_name) $tag=default_tag: && (_build-bib target_image tag "iso" "disk_config/iso.toml")
+build-iso $target_image=("localhost/" + risk) $tag=latest: && (_build-bib target_image tag "iso" "disk_config/iso.toml")
 
 # Rebuild a QCOW2 virtual machine image
 [group('Build Virtal Machine Image')]
-rebuild-qcow2 $target_image=("localhost/" + image_name) $tag=default_tag: && (_rebuild-bib target_image tag "qcow2" "disk_config/disk.toml")
+rebuild-qcow2 $target_image=("localhost/" + risk) $tag=latest: && (_rebuild-bib target_image tag "qcow2" "disk_config/disk.toml")
 
 # Rebuild a RAW virtual machine image
 [group('Build Virtal Machine Image')]
-rebuild-raw $target_image=("localhost/" + image_name) $tag=default_tag: && (_rebuild-bib target_image tag "raw" "disk_config/disk.toml")
+rebuild-raw $target_image=("localhost/" + risk) $tag=latest: && (_rebuild-bib target_image tag "raw" "disk_config/disk.toml")
 
 # Rebuild an ISO virtual machine image
 [group('Build Virtal Machine Image')]
-rebuild-iso $target_image=("localhost/" + image_name) $tag=default_tag: && (_rebuild-bib target_image tag "iso" "disk_config/iso.toml")
+rebuild-iso $target_image=("localhost/" + risk) $tag=latest: && (_rebuild-bib target_image tag "iso" "disk_config/iso.toml")
 
 # Run a virtual machine with the specified image type and configuration
 _run-vm $target_image $tag $type $config:
@@ -404,15 +385,15 @@ _run-vm $target_image $tag $type $config:
 
 # Run a virtual machine from a QCOW2 image
 [group('Run Virtal Machine')]
-run-vm-qcow2 $target_image=("localhost/" + image_name) $tag=default_tag: && (_run-vm target_image tag "qcow2" "disk_config/disk.toml")
+run-vm-qcow2 $target_image=("localhost/" + risk) $tag=latest: && (_run-vm target_image tag "qcow2" "disk_config/disk.toml")
 
 # Run a virtual machine from a RAW image
 [group('Run Virtal Machine')]
-run-vm-raw $target_image=("localhost/" + image_name) $tag=default_tag: && (_run-vm target_image tag "raw" "disk_config/disk.toml")
+run-vm-raw $target_image=("localhost/" + risk) $tag=latest: && (_run-vm target_image tag "raw" "disk_config/disk.toml")
 
 # Run a virtual machine from an ISO
 [group('Run Virtal Machine')]
-run-vm-iso $target_image=("localhost/" + image_name) $tag=default_tag: && (_run-vm target_image tag "iso" "disk_config/iso.toml")
+run-vm-iso $target_image=("localhost/" + risk) $tag=latest: && (_run-vm target_image tag "iso" "disk_config/iso.toml")
 
 # Run a virtual machine using systemd-vmspawn
 [group('Run Virtal Machine')]
