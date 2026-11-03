@@ -4,8 +4,8 @@ on:
   pull_request:
     branches:
       - main
-  schedule:
-    - cron: '05 10 * * *'  # 10:05am UTC everyday
+#   schedule:
+  #   - cron: '05 10 * * *'  # 10:05am UTC everyday
   push:
     branches:
       - main
@@ -14,7 +14,7 @@ on:
   workflow_dispatch:
 
 env:
-  IMAGE_REGISTRY: "ghcr.io/${{ github.repository_owner }}"  # do not edit
+  IMAGE_REGISTRY: "ghcr.io/calamityfox"
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref || github.run_id }}-${{ inputs.brand_name}}-${{ inputs.stream_name }}
@@ -49,9 +49,9 @@ jobs:
       - name: Image Name
         id: image-name
         run: |
-          IMAGE_NAME=$(just image_name)
+          IMAGE_NAME=risk
 
-          echo "IMAGE_NAME=${IMAGE_NAME}" >> $GITHUB_ENV
+          echo "IMAGE_NAME=risk" >> $GITHUB_ENV
 
       - name: Default Tag
         id: gen-default-tag
@@ -63,15 +63,15 @@ jobs:
       - name: Prepare environment
         run: |
           # Lowercase the image uri https://github.com/macbre/push-to-ghcr/issues/12
-          echo "IMAGE_REGISTRY=${IMAGE_REGISTRY,,}" >> ${GITHUB_ENV}
-          echo "IMAGE_NAME=${IMAGE_NAME,,}" >> ${GITHUB_ENV}
+          echo "IMAGE_REGISTRY=${calamityfox,,}" >> ${GITHUB_ENV}
+          echo "IMAGE_NAME=risk" >> ${GITHUB_ENV}
 
       # This actually builds the container image
       - name: Build Image
         id: build-image
         run: |
           just build \
-            ${IMAGE_NAME} \
+            risk \
             ${DEFAULT_TAG}
 
       # This is optional, this provides smaller delta updates
@@ -79,7 +79,7 @@ jobs:
         id: rechunk
         run: |
           just ostree-rechunk \
-            ${IMAGE_NAME} \
+            risk \
             ${DEFAULT_TAG}
 
       # If you are feeling adventurous, use the new distro agnostic rechunker
@@ -96,7 +96,7 @@ jobs:
         id: gen-build-tags
         run: |
           alias_tags="$(just generate-build-tags \
-                        ${IMAGE_NAME} \
+                        risk \
                         ${DEFAULT_TAG})"
 
           echo "Tags for this Action..."
@@ -109,7 +109,7 @@ jobs:
           ALIAS_TAGS: ${{ steps.gen-build-tags.outputs.alias_tags }}
         run: |
           just tag-images \
-            "${IMAGE_NAME}" \
+            "risk" \
             "${DEFAULT_TAG}" \
             "${ALIAS_TAGS}"
 
@@ -131,7 +131,7 @@ jobs:
         run: |
           set -euox pipefail
           for tag in ${ALIAS_TAGS}; do
-            podman push --digestfile=/tmp/digestfile ${IMAGE_NAME}:${tag} ${IMAGE_REGISTRY}/${IMAGE_NAME}:${tag}
+            podman push --digestfile=/tmp/digestfile risk:${tag} ${IMAGE_REGISTRY}/risk:${tag}
           done
 
           digest=$(< /tmp/digestfile)
@@ -160,5 +160,5 @@ jobs:
           # https://github.com/containers/container-libs/issues/388
           # https://github.com/coreos/rpm-ostree/issues/5509
           # use old bundle format, so we can use newer cosign 3.X.X instead of 2.X.X
-          cosign sign -y --new-bundle-format=false --use-signing-config=false --key env://COSIGN_PRIVATE_KEY ${IMAGE_REGISTRY}/${IMAGE_NAME}@${DIGEST}
+          cosign sign -y --new-bundle-format=false --use-signing-config=false --key env://COSIGN_PRIVATE_KEY ${IMAGE_REGISTRY}/risk@${DIGEST}
 
