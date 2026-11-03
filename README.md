@@ -32,11 +32,23 @@ sudo bootc switch --enforce-container-sigpolicy ghcr.io/calamityfox/risk:latest
 ### Fresh install
 ISO builds will happen... at some point. Right now I'm working on other things first
 
+# <img src="misc/media/flower.png" width="25"/> Security
+
+`Risk` is currently a personal project, so it's obviously not up to the same security standards as a proper distro like mainline Fedora, Debian, Mint etc. Nonetheless, I'm doing my best to make sure the project is reasonably secure:
+
+My GitHub account uses a 22-word diceware phrase and TOTP 2FA, and **git** actions are done using an SSH key. My GitHub credentials and the SSH key only exist on my LUKS encrypted laptop, as well as it's encrypted backups.
+
+`Risk`'s builds are signed with [Cosign](https://github.com/sigstore/cosign) using [GitHub Secrets](https://docs.github.com/en/actions/how-tos/write-workflows/choose-what-workflows-do/use-secrets).
+
+Additional packages are downloaded from either the official [Fedora repo](https://packages.fedoraproject.org) or from verified developers on [Flathub](https://flathub.org).
+
+In the future I plan to write my own out-of-the-box permissions for the Flatpaks that come pre-installed with `Risk`, but the default configuration is already secure enough for most use-cases.
+
 # <img src="misc/media/flower.png" width="25"/> Contact
 
 If you encounter a bug, please report it in the [Issue Tracker](issues).
 
-For anything else, including security/vulnerability disclosures, contact me at [calamityfox@purelymail.com](mailto:calamityfox@purelymail.com). You can encrypt your message with my [**age**](misc/public-key.age) or [**gpg**](misc/public-key.gpg) public keys.
+For anything else, including security/vulnerability disclosures, contact me at [calamityfox@purelymail.com](mailto:calamityfox@purelymail.com). You can encrypt your message with my [**age**](misc/public-key.age) or [**gpg**](misc/public-key.gpg) public keys. Encrypted emails without attached public keys won't be replied to, since I'd have to resort to plaintext which the sender may not want.
 
 # 
 
@@ -45,3 +57,4 @@ For anything else, including security/vulnerability disclosures, contact me at [
 
 <img src="misc/media/sourcecodeforlife.gif" width="220"/>  <img src="misc/media/dontrushme.gif" width="220"/>
 </div>
+
