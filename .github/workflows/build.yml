@@ -52,30 +52,10 @@ steps:
     echo "DEFAULT_TAG=latest" >> $GITHUB_ENV
 
 
-# - name: Build Image
- #  id: build-image
-  # run: just build risk latest
-   
- - name: Build
-   run: |
-    ctr=$(buildah from quay.io/fedora/fedora-silverblue:latest)
-    buildah run $ctr <<-'EOT' sh
-    set -ouex pipefail
-    
-     installRPM=(
-      age
-      niri
-      noctalia
-      sddm
-      tldr
-      yt-dlp
-      )
-    dnf5 install -y "${installRPM[@]}"
-    
-    bootc container lint
-    EOT
-    buildah commit $ctr localhost/myimage:${{ github.sha }}
-    buildah rm $ctr >/dev/null
+ - name: Build Image
+   id: build-image
+   run: just build risk latest
+
 
  - name: Rechunk with rpm-ostree
    id: rechunk
