@@ -70,6 +70,8 @@ jobs:
 
       - name: Tag Image
         id: tag-images
+        env:
+          ALIAS_TAGS: ${{ steps.gen-build-tags.outputs.alias_tags }}
         run: just tag-images risk latest "${ALIAS_TAGS}"
 
       # These `if` statements are so that pull requests for your custom images do not make it publish any packages under your name without you knowing
@@ -85,6 +87,8 @@ jobs:
       - name: Push To GHCR
         if: github.event_name != 'pull_request' && github.ref == format('refs/heads/{0}', github.event.repository.default_branch)
         id: push-image
+        env:
+          ALIAS_TAGS: ${{ steps.gen-build-tags.outputs.alias_tags }}
         run: |
           set -euox pipefail
           for tag in ${ALIAS_TAGS}; do
