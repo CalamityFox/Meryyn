@@ -63,6 +63,9 @@ jobs:
       - name: Generate Build Tags
         id: gen-build-tags
         run: alias_tags="$(just generate-build-tags risk latest)"
+          echo "Tags for this Action..."
+          echo "${alias_tags}"
+          echo "alias_tags=${alias_tags}" >> $GITHUB_OUTPUT
 
       - name: Tag Image
         id: tag-images
