@@ -73,6 +73,45 @@ jobs:
           just build \
             ${IMAGE_NAME} \
             ${DEFAULT_TAG}
+            
+        name: Install Packages
+        shell: bash
+        run: |
+          set -ouex pipefail
+          installRPM=(
+           age
+           niri
+           noctalia # Shell
+           plymouth
+           sddm
+           tldr
+           yt-dlp
+           )
+          dnf5 install -y "${installRPM[@]}"
+          
+        name: Remove packages
+        shell: bash
+        run: |
+          set -ouex pipefail
+          removeRPM=(
+           alacritty
+           fuzzel
+           gdm
+           gnome-browser-connector
+           gnome-classic-session
+           gnome-initial-setup
+           gnome-session-wayland-session
+           gnome-shell
+           gnome-shell-extension-apps-menu
+           gnome-shell-extension-common
+           gnome-shell-extension-background-logo
+           gnome-shell-extension-launch-new-instance
+           gnome-shell-extension-places-menu
+           gnome-shell-extension-window-list
+           swaylock
+           waybar
+           )
+           rpm-ostree override remove "${removeRPM[@]}"
 
       # This is optional, this provides smaller delta updates
       - name: Rechunk with rpm-ostree
