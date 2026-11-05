@@ -27,7 +27,7 @@ installRPM=(
  tldr
  yt-dlp
 )
-# dnf5 install -y "${installRPM[@]}"
+dnf5 install -y "${installRPM[@]}"
 
 
 # ========== remove RPMs ==========
@@ -49,7 +49,7 @@ removeRPM=(
  swaylock
  waybar
 )
-# rpm-ostree override remove "${removeRPM[@]}"
+rpm-ostree override remove "${removeRPM[@]}"
 
 
 # ========== install FLATPAKs ==========
@@ -76,7 +76,7 @@ installFLATPAK=(
  org.mozilla.thunderbird # E-mail client
 )
 flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
-# flatpak install -y --noninteractive flathub "${installFLATPAK[@]}"
+flatpak install -y --noninteractive flathub "${installFLATPAK[@]}"
 
 
 # ========== miscellanious ==========
