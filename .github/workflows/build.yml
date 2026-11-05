@@ -56,9 +56,7 @@ jobs:
       - name: Build Image
         id: build-image
         run: |
-          just build \
-            risk \
-            latest
+          just build risk latest
 
       # This is optional, this provides smaller delta updates
       - name: Rechunk with rpm-ostree
