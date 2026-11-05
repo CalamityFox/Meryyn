@@ -50,22 +50,19 @@ jobs:
         id: build-image
         run: just build risk latest
 
-      - name: Rechunk with rpm-ostree
-        id: rechunk
-        run: |
-          just ostree-rechunk risk latest
+      #- name: Rechunk with rpm-ostree
+       # id: rechunk
+        #run: |
+         # just ostree-rechunk risk latest
 
       # https://github.com/coreos/chunkah
-      #- name: Rechunk with Chunkah
-      #  id: rechunk
-      #  run: just rechunk risk latest
+      - name: Rechunk with Chunkah
+        id: rechunk
+        run: just rechunk risk latest
 
       - name: Generate Build Tags
         id: gen-build-tags
-        run: |
-          alias_tags="$(just generate-build-tags \
-                        ${IMAGE_NAME} \
-                        ${DEFAULT_TAG})"
+        run: alias_tags="$(just generate-build-tags risk latest)"
 
       - name: Tag Image
         id: tag-images
