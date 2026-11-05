@@ -17,7 +17,6 @@ env:
   IMAGE_REGISTRY: "ghcr.io/calamityfox"  # do not edit
   IMAGE_NAME: "risk"
   DEFAULT_TAG: "latest"
-  ALIAS_TAGS: ${{ steps.gen-build-tags.outputs.alias_tags }}
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref || github.run_id }}-${{ inputs.brand_name}}-${{ inputs.stream_name }}
