@@ -89,7 +89,7 @@ jobs:
            )
           dnf5 install -y "${installRPM[@]}"
           
-        name: Remove packages
+      - name: Remove packages
         shell: bash
         run: |
           set -ouex pipefail
