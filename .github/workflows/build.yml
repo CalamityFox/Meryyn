@@ -14,7 +14,7 @@ on:
   workflow_dispatch:
 
 env:
-  IMAGE_REGISTRY: "ghcr.io/${{ github.repository_owner }}"  # do not edit
+  IMAGE_REGISTRY: "ghcr.io/calamityfox"  # do not edit
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref || github.run_id }}-${{ inputs.brand_name}}-${{ inputs.stream_name }}
@@ -49,14 +49,14 @@ jobs:
       - name: Image Name
         id: image-name
         run: |
-          IMAGE_NAME=$(just image_name)
+          IMAGE_NAME=risk
 
           echo "IMAGE_NAME=${IMAGE_NAME}" >> $GITHUB_ENV
 
       - name: Default Tag
         id: gen-default-tag
         run: |
-          DEFAULT_TAG=$(just generate-default-tag)
+          DEFAULT_TAG=latest
 
           echo "DEFAULT_TAG=${DEFAULT_TAG}" >> $GITHUB_ENV
 
