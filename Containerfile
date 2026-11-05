@@ -27,7 +27,7 @@ installRPM=(
  tldr
  yt-dlp
 )
-dnf5 install -y "${installRPM[@]}"
+# dnf5 install -y "${installRPM[@]}"
 
 
 # ========== remove RPMs ==========
@@ -49,7 +49,7 @@ removeRPM=(
  swaylock
  waybar
 )
-rpm-ostree override remove "${removeRPM[@]}"
+# rpm-ostree override remove "${removeRPM[@]}"
 
 
 # ========== install FLATPAKs ==========
