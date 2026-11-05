@@ -17,7 +17,7 @@ env:
   IMAGE_REGISTRY: "ghcr.io/calamityfox"  # do not edit
   IMAGE_NAME: "risk"
   DEFAULT_TAG: "latest"
-
+  
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref || github.run_id }}-${{ inputs.brand_name}}-${{ inputs.stream_name }}
   cancel-in-progress: true
@@ -33,6 +33,7 @@ jobs:
       id-token: write
 
     steps:
+      # These stage versions are pinned by https://github.com/renovatebot/renovate
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
 
@@ -46,23 +47,33 @@ jobs:
         shell: bash
         run: just check
 
+      # This actually builds the container image
       - name: Build Image
         id: build-image
         run: just build risk latest
 
-      #- name: Rechunk with rpm-ostree
-       # id: rechunk
-        #run: |
-         # just ostree-rechunk risk latest
+      # This is optional, this provides smaller delta updates
+   #   - name: Rechunk with rpm-ostree
+    #    id: rechunk
+     #   run: |
+      #    just ostree-rechunk \
+       #     ${IMAGE_NAME} \
+        #    ${DEFAULT_TAG}
 
+      # If you are feeling adventurous, use the new distro agnostic rechunker
       # https://github.com/coreos/chunkah
+      # You can delete the Rechunk with rpm-ostree portion then if you use this
       - name: Rechunk with Chunkah
         id: rechunk
         run: just rechunk risk latest
 
       - name: Generate Build Tags
         id: gen-build-tags
-        run: alias_tags="$(just generate-build-tags risk latest)"
+        run: |
+          alias_tags="$(just generate-build-tags \
+                        ${IMAGE_NAME} \
+                        ${DEFAULT_TAG})"
+
           echo "Tags for this Action..."
           echo "${alias_tags}"
           echo "alias_tags=${alias_tags}" >> $GITHUB_OUTPUT
@@ -71,7 +82,11 @@ jobs:
         id: tag-images
         env:
           ALIAS_TAGS: ${{ steps.gen-build-tags.outputs.alias_tags }}
-        run: just tag-images risk latest "${ALIAS_TAGS}"
+        run: |
+          just tag-images \
+            "${IMAGE_NAME}" \
+            "${DEFAULT_TAG}" \
+            "${ALIAS_TAGS}"
 
       # These `if` statements are so that pull requests for your custom images do not make it publish any packages under your name without you knowing
       # They also check if the runner is on the default branch so that things like the merge queue (if you enable it), are going to work
