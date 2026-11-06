@@ -1,4 +1,4 @@
-image_name := "risk"
+image_name := "meryyn"
 repo_organization := "calamityfox"
 default_tag := "latest"
 bib_image := "quay.io/centos-bootc/bootc-image-builder:latest"

@@ -80,7 +80,7 @@ flatpak install -y --noninteractive flathub "${installFLATPAK[@]}"
 
 
 # ========== miscellanious ==========
-# wget -r -np -P / https://github.com/CalamityFox/Risk/tree/main/system/
+# wget -r -np -P / https://github.com/CalamityFox/meryyn/tree/main/system/
 # systemctl enable podman.socket
 
 
