@@ -81,9 +81,11 @@ flatpak install -y --noninteractive flathub "${installFLATPAK[@]}"
 
 
 # ========== miscellanious ==========
-rm /etc/hostname && touch /etc/hostname && echo meryyn > /etc/hostname # Set hostname
-sudo rpm-ostree kargs --delete=rhgb
-
+# rm /etc/hostname && touch /etc/hostname && echo meryyn > /etc/hostname # Set hostname
+# sudo rpm-ostree kargs --delete=rhgb
+hostnamectl set-hostname meryyn
+mkdir -p /usr/lib/bootc/kargs.d && printf '%s\n' 'kargs = ["plymouth.enable=0", "disablehooks=plymouth"]' > /usr/lib/bootc/kargs.d/10-no-splash.toml
+      
 
 # ========== TEMPORARY ==========
 cat /var/lib/noctalia-greeter/greeter.toml
