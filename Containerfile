@@ -20,13 +20,14 @@ dnf5 install -y https://download1.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree
 # ========== install RPMs ==========
 installRPM=(
  age
- cosign
+ greetd
  niri
  noctalia
- sddm
+ noctalia-greeter
  tldr
  yt-dlp
 )
+dnf5 install -y --nogpgcheck --repofrompath 'terra,https://repos.fyralabs.com/terra$releasever' terra-release
 dnf5 install -y "${installRPM[@]}"
 
 
@@ -82,6 +83,11 @@ flatpak install -y --noninteractive flathub "${installFLATPAK[@]}"
 
 # ========== miscellanious ==========
 rm /etc/hostname && touch /etc/hostname && echo meryyn > /etc/hostname # Set hostname
+
+# ========== TEMPORARY ==========
+cat /var/lib/noctalia-greeter/greeter.toml
+cat /var/lib/noctalia-greeter/sync.toml
+
 
 # ========== verify image ==========
 bootc container lint
