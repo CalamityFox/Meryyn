@@ -48,6 +48,7 @@ removeRPM=(
  gnome-shell-extension-places-menu
  gnome-shell-extension-window-list
  plymouth
+ plymouth-scripts
  swaylock
  waybar
 )
