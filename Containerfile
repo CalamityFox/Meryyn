@@ -47,10 +47,6 @@ removeRPM=(
  gnome-shell-extension-launch-new-instance
  gnome-shell-extension-places-menu
  gnome-shell-extension-window-list
- plymouth
- plymouth-plugin-two-step
- plymouth-plugin-label
- plymouth-scripts
  swaylock
  waybar
 )
@@ -86,6 +82,8 @@ flatpak install -y --noninteractive flathub "${installFLATPAK[@]}"
 
 # ========== miscellanious ==========
 rm /etc/hostname && touch /etc/hostname && echo meryyn > /etc/hostname # Set hostname
+sudo rpm-ostree kargs --delete=rhgb
+
 
 # ========== TEMPORARY ==========
 cat /var/lib/noctalia-greeter/greeter.toml
