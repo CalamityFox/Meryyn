@@ -34,7 +34,6 @@ jobs:
       id-token: write
 
     steps:
-      # These stage versions are pinned by https://github.com/renovatebot/renovate
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
 
@@ -193,10 +192,7 @@ jobs:
           for tag in ${ALIAS_TAGS}; do
             podman tag "${IMAGE}" "meryyn:${tag}"
           done
-          podman images
-
-
-      - name: Build Image
+          podman images- name: Build Image
         run: |
           set -euox pipefail
           LABELS=()
@@ -210,31 +206,64 @@ jobs:
           fi
           podman build "${LABELS[@]}" --pull=newer --tag meryyn:latest --file Containerfile .
 
-     # - name: Rechunk with rpm-ostree
-     #   id: rechunk
-     #   run: just ostree-rechunk meryyn latest
-
       - name: Rechunk with Chunkah
         id: rechunk
-        run: just rechunk meryyn latest
+        run: |
+          set -xeuo pipefail
+          CHUNKAH_CONFIG_FILE="$(mktemp)"
+          CHUNKAH_OUTPUT_DIR="$(mktemp -d ./meryyn_chunkah_XXXXXX)"
+          trap 'rm -f "${CHUNKAH_CONFIG_FILE}"; rm -rf "${CHUNKAH_OUTPUT_DIR}"' EXIT
+          podman inspect meryyn:latest > "${CHUNKAH_CONFIG_FILE}"
+
+          podman run --rm \
+            --mount=type=image,src=meryyn:latest,target=/chunkah \
+            -v "${CHUNKAH_CONFIG_FILE}:/chunkah-config.json:ro,Z" \
+            -v "${CHUNKAH_OUTPUT_DIR}:/run/out:Z" \
+            quay.io/coreos/chunkah:latest \
+            build \
+            --verbose \
+            --compressed \
+            --max-layers 128 \
+            --prune /sysroot/ \
+            --label ostree.commit- --label ostree.final-diffid- \
+            --config /chunkah-config.json \
+            --output oci:/run/out/chunked
+
+          CHUNKED_IMAGE="$(podman pull "oci:${CHUNKAH_OUTPUT_DIR}/chunked")"
+          podman tag "${CHUNKED_IMAGE}" meryyn:latest
 
       - name: Generate Build Tags
         id: gen-build-tags
-        run: alias_tags="$(just generate-build-tags meryyn latest)"
-
+        run: |
+          set -euox pipefail
+          DATE=$(date +%Y%m%d)
+          BUILD_TAGS=()
+          if [[ -z "$(git status -s)" ]]; then
+            GIT_SHA=$(git rev-parse --short HEAD)
+            BUILD_TAGS+=("latest-${GIT_SHA}")
+            BUILD_TAGS+=("latest-${DATE}-${GIT_SHA}")
+            BUILD_TAGS+=("${DATE}-${GIT_SHA}")
+          fi
+          BUILD_TAGS+=("${DATE}")
+          BUILD_TAGS+=("latest")
+          BUILD_TAGS+=("latest-${DATE}")
           echo "Tags for this Action..."
-          echo "${alias_tags}"
-          echo "alias_tags=${alias_tags}" >> $GITHUB_OUTPUT
+          echo "${BUILD_TAGS[@]}"
+          echo "alias_tags=${BUILD_TAGS[@]}" >> "$GITHUB_OUTPUT"
 
       - name: Tag Image
         id: tag-images
         env:
           ALIAS_TAGS: ${{ steps.gen-build-tags.outputs.alias_tags }}
         run: |
-          just tag-images meryyn latest "${ALIAS_TAGS}"
+          set -euox pipefail
+          IMAGE=$(podman inspect meryyn:latest | jq -r .[].Id)
+          podman untag "${IMAGE}"
+          for tag in ${ALIAS_TAGS}; do
+            podman tag "${IMAGE}" "meryyn:${tag}"
+          done
+          podman images
 
-      # These `if` statements are so that pull requests for your custom images do not make it publish any packages under your name without you knowing
-      # They also check if the runner is on the default branch so that things like the merge queue (if you enable it), are going to work
       - name: Login to GitHub Container Registry
         uses: docker/login-action@81c6f93d4bc991e510b342a00b419b3bb4efc5c6 # v4.7.0
         if: github.event_name != 'pull_request' && github.ref == format('refs/heads/{0}', github.event.repository.default_branch)
