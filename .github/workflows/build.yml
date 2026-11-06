@@ -50,7 +50,12 @@ jobs:
 
       - name: Build Image
         id: build-image
-        run: just build meryyn latest
+        run: |
+          cat <<'EOF' > Containerfile
+          FROM quay.io/fedora/fedora-silverblue:latest
+          RUN bootc container lint
+          EOF
+          just build meryyn latest
 
      # Alternatively rechunk with rpm-ostree
      # - name: Rechunk with rpm-ostree
