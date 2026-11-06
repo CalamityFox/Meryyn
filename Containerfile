@@ -20,10 +20,10 @@ dnf5 install -y https://download1.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree
 # ========== install RPMs ==========
 installRPM=(
  age
- niri # Window manager
- noctalia # Shell
- plymouth
- sddm # Display manager
+ cosign
+ niri
+ noctalia
+ sddm
  tldr
  yt-dlp
 )
@@ -46,6 +46,7 @@ removeRPM=(
  gnome-shell-extension-launch-new-instance
  gnome-shell-extension-places-menu
  gnome-shell-extension-window-list
+ plymouth
  swaylock
  waybar
 )
