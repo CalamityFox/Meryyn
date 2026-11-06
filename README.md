@@ -9,7 +9,7 @@
 <br>
 
 [<img src="misc/media/readme.png" width="120"/>](README.md#-how-it-works-)
-[<img src="misc/media/install.png" width="120"/>](README.md#-install-))
+[<img src="misc/media/install.png" width="120"/>](README.md#-install-)
 [<img src="misc/media/bugreport.png" width="120"/>](https://github.com/CalamityFox/Meryyn/issues)
 [<img src="misc/media/contact.png" width="120"/>](README.md#-contact-)
 
@@ -38,14 +38,6 @@ It's a personal project and is not currently ready for use.
 <img src="misc/media/sourcecodeforlife.gif" width="220"/> 
 <img src="misc/media/dontrushme.gif" width="220"/>
 </div>
-
-<br>
-<br>
-<br>
-
-<br>
-<br>
-<br>
 
 <br>
 <br>
