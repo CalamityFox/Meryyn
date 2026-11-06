@@ -106,7 +106,7 @@ If you encounter a bug, please report it in the [Issue Tracker](issues).
 
 For anything else, including security/vulnerability disclosures, contact me at [calamityfox@purelymail.com](mailto:calamityfox@purelymail.com).
 
-You can encrypt your message with my [**age**](misc/public-key.age) or [**gpg**](misc/public-key.gpg) public keys. If you encrypt your message, please include your own public **age** or **gpg** public key (either as an attachment or a link to a keyserver), or I won't be able to send a reply without falling back to plaintext.
+You can encrypt your message with my [**age**](misc/public-key.age) or [**gpg**](misc/public-key.gpg) public keys. If you encrypt your message, please include your own **age** or **gpg** public key (either as an attachment or a link to a keyserver), or I won't be able to send a reply without falling back to plaintext.
 
 You can also message me on [Signal](https://signal.org). My username is [`kes.123`](https://signal.me/#eu/nM5aRSJ1kqOL0RtXQHOtgxqk6S5baJuLUNf4RxV1cu1ZIYaKd_dNBIZPvKpvRRZO).
 

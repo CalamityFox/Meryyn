@@ -80,9 +80,7 @@ flatpak install -y --noninteractive flathub "${installFLATPAK[@]}"
 
 
 # ========== miscellanious ==========
-# wget -r -np -P / https://github.com/CalamityFox/meryyn/tree/main/system/
-# systemctl enable podman.socket
-
+rm /etc/hostname && touch /etc/hostname && echo meryyn > /etc/hostname # Set hostname
 
 # ========== verify image ==========
 bootc container lint
