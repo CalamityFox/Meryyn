@@ -41,13 +41,6 @@ jobs:
       - name: Maximize build space
         uses: ublue-os/remove-unwanted-software@695eb75bc387dbcd9685a8e72d23439d8686cba6
 
-      - name: Install just
-        uses: extractions/setup-just@53165ef7e734c5c07cb06b3c8e7b647c5aa16db3 #v4.0.0
-
-      - name: Check Just Syntax
-        shell: bash
-        run: just check
-
       - name: Download and verify fedora-silverblue:latest
         run: |
           cat <<'EOF' > Containerfile
@@ -131,9 +124,92 @@ jobs:
           EOF
 
       - name: Build Image
-        run: just build meryyn latest
+        run: |
+          set -euox pipefail
+          LABELS=()
+          if [[ -z "$(git status -s)" ]]; then
+            GIT_SHA=$(git rev-parse --short HEAD)
+            LABELS+=("--label" "io.artifacthub.package.readme-url=https://raw.githubusercontent.com/calamityfox/meryyn/${GIT_SHA}/README.md")
+            LABELS+=("--label" "org.opencontainers.image.documentation=https://raw.githubusercontent.com/calamityfox/meryyn/${GIT_SHA}/README.md")
+            LABELS+=("--label" "org.opencontainers.image.source=https://github.com/calamityfox/meryyn/blob/${GIT_SHA}/Containerfile")
+            LABELS+=("--label" "org.opencontainers.image.url=https://github.com/calamityfox/meryyn/tree/${GIT_SHA}")
+            LABELS+=("--label" "org.opencontainers.image.version=latest.$(date +%Y%m%d)-${GIT_SHA}")
+          fi
+          podman build "${LABELS[@]}" --pull=newer --tag meryyn:latest --file Containerfile .
 
-     # Alternatively rechunk with rpm-ostree
+      - name: Rechunk with Chunkah
+        id: rechunk
+        run: |
+          set -xeuo pipefail
+          CHUNKAH_CONFIG_FILE="$(mktemp)"
+          CHUNKAH_OUTPUT_DIR="$(mktemp -d ./meryyn_chunkah_XXXXXX)"
+          trap 'rm -f "${CHUNKAH_CONFIG_FILE}"; rm -rf "${CHUNKAH_OUTPUT_DIR}"' EXIT
+          podman inspect meryyn:latest > "${CHUNKAH_CONFIG_FILE}"
+
+          podman run --rm \
+            --mount=type=image,src=meryyn:latest,target=/chunkah \
+            -v "${CHUNKAH_CONFIG_FILE}:/chunkah-config.json:ro,Z" \
+            -v "${CHUNKAH_OUTPUT_DIR}:/run/out:Z" \
+            quay.io/coreos/chunkah:latest \
+            build \
+            --verbose \
+            --compressed \
+            --max-layers 128 \
+            --prune /sysroot/ \
+            --label ostree.commit- --label ostree.final-diffid- \
+            --config /chunkah-config.json \
+            --output oci:/run/out/chunked
+
+          CHUNKED_IMAGE="$(podman pull "oci:${CHUNKAH_OUTPUT_DIR}/chunked")"
+          podman tag "${CHUNKED_IMAGE}" meryyn:latest
+
+      - name: Generate Build Tags
+        id: gen-build-tags
+        run: |
+          set -euox pipefail
+          DATE=$(date +%Y%m%d)
+          BUILD_TAGS=()
+          if [[ -z "$(git status -s)" ]]; then
+            GIT_SHA=$(git rev-parse --short HEAD)
+            BUILD_TAGS+=("latest-${GIT_SHA}")
+            BUILD_TAGS+=("latest-${DATE}-${GIT_SHA}")
+            BUILD_TAGS+=("${DATE}-${GIT_SHA}")
+          fi
+          BUILD_TAGS+=("${DATE}")
+          BUILD_TAGS+=("latest")
+          BUILD_TAGS+=("latest-${DATE}")
+          echo "Tags for this Action..."
+          echo "${BUILD_TAGS[@]}"
+          echo "alias_tags=${BUILD_TAGS[@]}" >> "$GITHUB_OUTPUT"
+
+      - name: Tag Image
+        id: tag-images
+        env:
+          ALIAS_TAGS: ${{ steps.gen-build-tags.outputs.alias_tags }}
+        run: |
+          set -euox pipefail
+          IMAGE=$(podman inspect meryyn:latest | jq -r .[].Id)
+          podman untag "${IMAGE}"
+          for tag in ${ALIAS_TAGS}; do
+            podman tag "${IMAGE}" "meryyn:${tag}"
+          done
+          podman images
+
+
+      - name: Build Image
+        run: |
+          set -euox pipefail
+          LABELS=()
+          if [[ -z "$(git status -s)" ]]; then
+            GIT_SHA=$(git rev-parse --short HEAD)
+            LABELS+=("--label" "io.artifacthub.package.readme-url=https://raw.githubusercontent.com/calamityfox/meryyn/${GIT_SHA}/README.md")
+            LABELS+=("--label" "org.opencontainers.image.documentation=https://raw.githubusercontent.com/calamityfox/meryyn/${GIT_SHA}/README.md")
+            LABELS+=("--label" "org.opencontainers.image.source=https://github.com/calamityfox/meryyn/blob/${GIT_SHA}/Containerfile")
+            LABELS+=("--label" "org.opencontainers.image.url=https://github.com/calamityfox/meryyn/tree/${GIT_SHA}")
+            LABELS+=("--label" "org.opencontainers.image.version=latest.$(date +%Y%m%d)-${GIT_SHA}")
+          fi
+          podman build "${LABELS[@]}" --pull=newer --tag meryyn:latest --file Containerfile .
+
      # - name: Rechunk with rpm-ostree
      #   id: rechunk
      #   run: just ostree-rechunk meryyn latest
@@ -144,10 +220,7 @@ jobs:
 
       - name: Generate Build Tags
         id: gen-build-tags
-        run: |
-          alias_tags="$(just generate-build-tags \
-                        ${IMAGE_NAME} \
-                        ${DEFAULT_TAG})"
+        run: alias_tags="$(just generate-build-tags meryyn latest)"
 
           echo "Tags for this Action..."
           echo "${alias_tags}"
