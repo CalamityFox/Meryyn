@@ -14,7 +14,6 @@ default:
 # Check Just Syntax
 [group('Just')]
 check:
-    #!/usr/bin/env bash
     find . -type f -name "*.just" | while read -r file; do
     	echo "Checking syntax: $file"
     	just --unstable --fmt --check -f $file
@@ -25,7 +24,6 @@ check:
 # Fix Just Syntax
 [group('Just')]
 fix:
-    #!/usr/bin/env bash
     find . -type f -name "*.just" | while read -r file; do
     	echo "Checking syntax: $file"
     	just --unstable --fmt -f $file
@@ -87,29 +85,26 @@ sudoif command *args:
 #
 
 # Build the image using the specified parameters
-build $target_image=image_name $tag=default_tag:
-    #!/usr/bin/env bash
-
+build meryyn latest:
     set -euox pipefail
 
     BUILD_ARGS=()
     LABELS=()
     if [[ -z "$(git status -s)" ]]; then
         GIT_SHA=$(git rev-parse --short HEAD)
-        LABELS+=("--label" "io.artifacthub.package.readme-url=https://raw.githubusercontent.com/{{ repo_organization }}/{{ image_name }}/${GIT_SHA}/README.md")
-        LABELS+=("--label" "org.opencontainers.image.documentation=https://raw.githubusercontent.com/{{ repo_organization }}/{{ image_name }}/${GIT_SHA}/README.md")
-        LABELS+=("--label" "org.opencontainers.image.source=https://github.com/{{ repo_organization }}/{{ image_name }}/blob/${GIT_SHA}/Containerfile")
-        LABELS+=("--label" "org.opencontainers.image.url=https://github.com/{{ repo_organization }}/{{ image_name }}/tree/${GIT_SHA}")
+        LABELS+=("--label" "io.artifacthub.package.readme-url=https://raw.githubusercontent.com/calamityfox/meryyn/${GIT_SHA}/README.md")
+        LABELS+=("--label" "org.opencontainers.image.documentation=https://raw.githubusercontent.com/calamityfox/meryyn/${GIT_SHA}/README.md")
+        LABELS+=("--label" "org.opencontainers.image.source=https://github.com/calamityfox/meryyn/blob/${GIT_SHA}/Containerfile")
+        LABELS+=("--label" "org.opencontainers.image.url=https://github.com/calamityfox/meryyn/tree/${GIT_SHA}")
         LABELS+=("--label" "org.opencontainers.image.version={{ default_tag }}.$(date +%Y%m%d)-${GIT_SHA}")
     fi
 
-    # This actually builds the image!
-    PODMAN_BUILD_ARGS=("${BUILD_ARGS[@]}" "${LABELS[@]}" --pull=newer --tag "${target_image}:${tag}" --file Containerfile)
+    PODMAN_BUILD_ARGS=("${BUILD_ARGS[@]}" "${LABELS[@]}" --pull=newer --tag "meryyn:latest" --file Containerfile)
 
     podman build "${PODMAN_BUILD_ARGS[@]}" .
 
-# Split the image for smaller updates (New)!
-rechunk $target_image=image_name $tag=default_tag:
+# Rechunk with Chunkah
+rechunk meryyn latest:
     #!/usr/bin/env bash
 
     set -xeuo pipefail
@@ -128,45 +123,14 @@ rechunk $target_image=image_name $tag=default_tag:
     podman inspect "${target_image}:${tag}" > "${CHUNKAH_CONFIG_FILE}"
 
     podman run --rm \
-      --mount=type=image,src="${target_image}:${tag}",target=/chunkah \
-      -v "${CHUNKAH_CONFIG_FILE}:/chunkah-config.json:ro,Z" \
-      -v "${CHUNKAH_OUTPUT_DIR}:/run/out:Z" \
-      quay.io/coreos/chunkah:latest \
-      build \
-      --verbose \
-      --compressed \
-      --max-layers 128 \
-      --prune /sysroot/ \
-      --label ostree.commit- --label ostree.final-diffid- \
-      --config /chunkah-config.json \
-      --output oci:/run/out/chunked
+      --mount=type=image,src="${target_image}:${tag}",target=/chunkah -v "${CHUNKAH_CONFIG_FILE}:/chunkah-config.json:ro,Z" \
+      -v "${CHUNKAH_OUTPUT_DIR}:/run/out:Z" quay.io/coreos/chunkah:latest \
+      build --verbose --compressed --max-layers 128 --prune /sysroot/ --label ostree.commit- --label ostree.final-diffid- \
+      --config /chunkah-config.json --output oci:/run/out/chunked
 
     CHUNKED_IMAGE="$(podman pull "oci:${CHUNKAH_OUTPUT_DIR}/chunked")"
-    podman tag "${CHUNKED_IMAGE}" "${target_image}:${tag}"
+    podman tag "${CHUNKED_IMAGE}" "meryyn:latest"
 
-# Split the image for smaller updates (Classical)!
-ostree-rechunk $target_image=image_name $tag=default_tag:
-    #!/usr/bin/env bash
-
-    set -xeuo pipefail
-
-    # Use the already-built local image to avoid pulling from a remote registry
-    RPM_OSTREE_CHUNKER_IMAGE="localhost/${target_image}:${tag}"
-
-    GRAPHROOT="$(podman info --format '{{ '{{.Store.GraphRoot}}' }}')"
-
-    podman run --rm --pull=never --privileged \
-      --mount=type=image,src="${target_image}:${tag}",target=/rpm-ostree \
-      --mount=type=bind,src=${GRAPHROOT},target=/run/host-container-storage,rw \
-      --mount=type=tmpfs,target=/run/rpm-ostree-storage \
-      --entrypoint /usr/bin/rpm-ostree \
-      "${RPM_OSTREE_CHUNKER_IMAGE}" \
-      compose build-chunked-oci \
-      --max-layers 127 \
-      --format-version=2 \
-      --bootc \
-      --rootfs /rpm-ostree \
-      --output "containers-storage:[overlay@/run/host-container-storage+/run/rpm-ostree-storage]localhost/${target_image}:${tag}"
 
 # Generate Default Tag
 [group('Utility')]
@@ -174,12 +138,11 @@ generate-default-tag $tag=default_tag:
     #!/usr/bin/env bash
     set -eoux pipefail
 
-    echo "${tag}"
+    echo "latest"
 
 # Generate Tags
 [group('Utility')]
 generate-build-tags $target_image=image_name $tag=default_tag:
-    #!/usr/bin/env bash
     set -eoux pipefail
 
     DATE=$(date +%Y%m%d)
@@ -215,14 +178,7 @@ tag-images $target_image=image_name $tag=default_tag tags="":
     # Show Images
     podman images
 
-# Image Name
-[group('Utility')]
-[private]
-image_name $target_image=image_name:
-    #!/usr/bin/env bash
-    set -eoux pipefail
 
-    echo "${image_name}"
 
 # Command: _rootful_load_image
 # Description: This script checks if the current user is root or running under sudo. If not, it attempts to resolve the image tag using podman inspect.
@@ -321,32 +277,26 @@ _build-bib $target_image $tag $type $config: (_rootful_load_image target_image t
 # Example: just _rebuild-bib localhost/fedora latest qcow2 disk_config/disk.toml
 _rebuild-bib $target_image $tag $type $config: (build target_image tag) && (_build-bib target_image tag type config)
 
-# Build a QCOW2 virtual machine image
 [group('Build Virtal Machine Image')]
-build-qcow2 $target_image=("localhost/" + image_name) $tag=default_tag: && (_build-bib target_image tag "qcow2" "disk_config/disk.toml")
+build-qcow2 "localhost/meryyn" latest: && (_build-bib target_image tag "qcow2" "disk_config/disk.toml")
 
-# Build a RAW virtual machine image
 [group('Build Virtal Machine Image')]
-build-raw $target_image=("localhost/" + image_name) $tag=default_tag: && (_build-bib target_image tag "raw" "disk_config/disk.toml")
+build-raw "localhost/meryyn" latest: && (_build-bib target_image tag "raw" "disk_config/disk.toml")
 
-# Build an ISO virtual machine image
 [group('Build Virtal Machine Image')]
-build-iso $target_image=("localhost/" + image_name) $tag=default_tag: && (_build-bib target_image tag "iso" "disk_config/iso.toml")
+build-iso "localhost/meryyn" latest: && (_build-bib target_image tag "iso" "disk_config/iso.toml")
 
-# Rebuild a QCOW2 virtual machine image
 [group('Build Virtal Machine Image')]
-rebuild-qcow2 $target_image=("localhost/" + image_name) $tag=default_tag: && (_rebuild-bib target_image tag "qcow2" "disk_config/disk.toml")
+rebuild-qcow2 "localhost/meryyn" latest: && (_rebuild-bib target_image tag "qcow2" "disk_config/disk.toml")
 
-# Rebuild a RAW virtual machine image
 [group('Build Virtal Machine Image')]
-rebuild-raw $target_image=("localhost/" + image_name) $tag=default_tag: && (_rebuild-bib target_image tag "raw" "disk_config/disk.toml")
+rebuild-raw "localhost/meryyn" latest: && (_rebuild-bib target_image tag "raw" "disk_config/disk.toml")
 
-# Rebuild an ISO virtual machine image
 [group('Build Virtal Machine Image')]
 rebuild-iso $target_image=("localhost/" + image_name) $tag=default_tag: && (_rebuild-bib target_image tag "iso" "disk_config/iso.toml")
 
 # Run a virtual machine with the specified image type and configuration
-_run-vm $target_image $tag $type $config:
+_run-vm meryyn latest $type $config:
     #!/usr/bin/env bash
     set -eoux pipefail
 
@@ -389,15 +339,15 @@ _run-vm $target_image $tag $type $config:
 
 # Run a virtual machine from a QCOW2 image
 [group('Run Virtal Machine')]
-run-vm-qcow2 $target_image=("localhost/" + image_name) $tag=default_tag: && (_run-vm target_image tag "qcow2" "disk_config/disk.toml")
+run-vm-qcow2 "localhost/meryyn" latest: && (_run-vm target_image tag "qcow2" "disk_config/disk.toml")
 
 # Run a virtual machine from a RAW image
 [group('Run Virtal Machine')]
-run-vm-raw $target_image=("localhost/" + image_name) $tag=default_tag: && (_run-vm target_image tag "raw" "disk_config/disk.toml")
+run-vm-raw "localhost/meryyn" latest: && (_run-vm target_image tag "raw" "disk_config/disk.toml")
 
 # Run a virtual machine from an ISO
 [group('Run Virtal Machine')]
-run-vm-iso $target_image=("localhost/" + image_name) $tag=default_tag: && (_run-vm target_image tag "iso" "disk_config/iso.toml")
+run-vm-iso "localhost/meryyn" latest: && (_run-vm target_image tag "iso" "disk_config/iso.toml")
 
 # Run a virtual machine using systemd-vmspawn
 [group('Run Virtal Machine')]
