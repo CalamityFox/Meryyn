@@ -51,7 +51,7 @@ jobs:
       - name: Download and verify fedora-silverblue:latest
         run: |
           cat <<'EOF' > Containerfile
-          FROM quay.io/fedora/fedora-silverblue:latest
+          FROM quay.io/fedora/fedora-bootc:latest
           RUN bootc container lint
           EOF
 
