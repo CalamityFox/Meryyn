@@ -192,9 +192,10 @@ jobs:
         id: image-tags
         run: |
           set -eoux pipefail
+          DATE=$(date +%Y%m%d)
           alias_tags="$DATE latest latest-$DATE"
           echo "alias_tags=${alias_tags}" >> $GITHUB_OUTPUT
-          DATE=$(date +%Y%m%d)
+          
           IMAGE=$(podman inspect "meryyn:latest" | jq -r .[].Id)
           podman untag ${IMAGE}
           
