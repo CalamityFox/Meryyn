@@ -60,7 +60,6 @@ jobs:
           cat <<'EOF' >> Containerfile
           RUN <<-'EOT' sh
           installRPM=(
-           age
            flatpak
            niri
            noctalia
@@ -77,6 +76,8 @@ jobs:
           removeRPM=(
            alacritty
            fuzzel
+           gnome-desktop3
+           gnome-desktop4
            swaylock
            waybar
            )
