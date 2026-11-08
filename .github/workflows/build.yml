@@ -62,12 +62,12 @@ jobs:
           installRPM=(
            age
            flatpak
-           lightdm
-           lightdm-gtk-greeter
+  #         lightdm
+  #         lightdm-gtk-greeter
            niri
            noctalia
-           tldr
-           yt-dlp
+  #         tldr
+  #         yt-dlp
            )
           dnf5 install -y --nogpgcheck --repofrompath 'terra,https://repos.fyralabs.com/terra$releasever' terra-release
           dnf5 install -y "${installRPM[@]}"
