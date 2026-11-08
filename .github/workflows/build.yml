@@ -25,7 +25,7 @@ concurrency:
 
 jobs:
   build_push:
-    name: Build and push image
+    name: Build and push meryyn:latest
     runs-on: ubuntu-26.04
 
     permissions:
@@ -48,7 +48,7 @@ jobs:
         shell: bash
         run: just check
 
-      - name: Download and verify fedora-silverblue:latest
+      - name: Download and verify fedora-bootc:latest
         run: |
           cat <<'EOF' > Containerfile
           FROM quay.io/fedora/fedora-bootc:latest
@@ -118,7 +118,23 @@ jobs:
           EOF
 
       - name: Build Image
-        run: just build meryyn latest
+        run: |
+          set -euox pipefail
+
+          BUILD_ARGS=()
+          LABELS=()
+          if [[ -z "$(git status -s)" ]]; then
+              GIT_SHA=$(git rev-parse --short HEAD)
+              LABELS+=("--label" "io.artifacthub.package.readme-url=https://raw.githubusercontent.com/calamityfox/meryyn/${GIT_SHA}/README.md")
+              LABELS+=("--label" "org.opencontainers.image.documentation=https://raw.githubusercontent.com/calamityfox/meryyn/${GIT_SHA}/README.md")
+              LABELS+=("--label" "org.opencontainers.image.source=https://github.com/calamityfox/meryyn/blob/${GIT_SHA}/Containerfile")
+              LABELS+=("--label" "org.opencontainers.image.url=https://github.com/calamityfox/meryy/tree/${GIT_SHA}")
+              LABELS+=("--label" "org.opencontainers.image.version={{ default_tag }}.$(date +%Y%m%d)-${GIT_SHA}")
+          fi
+
+          PODMAN_BUILD_ARGS=("${BUILD_ARGS[@]}" "${LABELS[@]}" --pull=newer --tag "${target_image}:${tag}" --file Containerfile)
+
+          podman build "${PODMAN_BUILD_ARGS[@]}" .
 
      # Alternatively rechunk with rpm-ostree
      # - name: Rechunk with rpm-ostree
