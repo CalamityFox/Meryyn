@@ -193,13 +193,13 @@ jobs:
         run: |
           set -eoux pipefail
           DATE=$(date +%Y%m%d)
-          alias_tags="$DATE latest latest-$DATE"
-          echo "alias_tags=${alias_tags}" >> $GITHUB_OUTPUT
+          meryyn-tags="$DATE latest latest-$DATE"
+          echo "meryyn-tags=${meryyn-tags}" >> $GITHUB_OUTPUT
           
           IMAGE=$(podman inspect "meryyn:latest" | jq -r .[].Id)
           podman untag ${IMAGE}
           
-          for tag in ${ALIAS_TAGS}; do 
+          for tag in ${meryyn-tags}; do 
             podman tag $IMAGE "${tag}"
           done
 
@@ -219,10 +219,10 @@ jobs:
         if: github.event_name != 'pull_request' && github.ref == format('refs/heads/{0}', github.event.repository.default_branch)
         id: push-image
         env:
-          ALIAS_TAGS: ${{ steps.image-tags.outputs.alias_tags }}
+          meryyn-tags: ${{ steps.image-tags.outputs.meryyn-tags }}
         run: |
           set -euox pipefail
-          for tag in ${ALIAS_TAGS}; do
+          for tag in ${meryyn-tags}; do
             podman push --digestfile=/tmp/digestfile meryyn:${tag} ghcr.io/calamityfox/meryyn:${tag}
           done
 
