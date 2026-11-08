@@ -83,6 +83,20 @@ jobs:
           [[customizations.filesystem]]
           mountpoint = "/"
           minsize = "20 GiB"
+
+          [customizations.installer.modules]
+          enable = [
+           "org.fedoraproject.Anaconda.Modules.Storage",
+           "org.fedoraproject.Anaconda.Modules.Runtime"
+          ]
+          disable = [
+            "org.fedoraproject.Anaconda.Modules.Network",
+            "org.fedoraproject.Anaconda.Modules.Security",
+            "org.fedoraproject.Anaconda.Modules.Services",
+            "org.fedoraproject.Anaconda.Modules.Users",
+            "org.fedoraproject.Anaconda.Modules.Subscription",
+            "org.fedoraproject.Anaconda.Modules.Timezone"
+          ]
           EOF
 
       - name: Build disk images
@@ -90,7 +104,7 @@ jobs:
         uses: osbuild/bootc-image-builder-action@028e4d28330efe546229eb9cb52aee78174d2347 # main
         with:
           builder-image: "quay.io/centos-bootc/bootc-image-builder:latest"
-          config-file: ${{ matrix.disk-type == 'anaconda-iso' && './disk_config/iso.toml' || 'meryyn-iso' }}
+          config-file: ${{ matrix.disk-type == 'anaconda-iso' && 'meryyn-iso' }}
           image: "calamityfox/meryyn:latest"
           chown: ${{ env.USER_UID }}:${{ env.USER_GID }}
           types: ${{ matrix.disk-type }}
