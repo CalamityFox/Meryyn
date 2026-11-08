@@ -174,22 +174,22 @@ jobs:
       - name: Generate Build Tags
         id: gen-build-tags
         run: |
-          alias_tags="set -eoux pipefail
-                       DATE=$(date +%Y%m%d)
-                       BUILD_TAGS=()
-                       if [[ -z "$(git status -s)" ]]; then
-                           GIT_SHA=$(git rev-parse --short HEAD)
-                           BUILD_TAGS+=("${tag}-${GIT_SHA}")
-                           BUILD_TAGS+=("${tag}-${DATE}-${GIT_SHA}")
-                           BUILD_TAGS+=("${DATE}-${GIT_SHA}")
-                       fi
+          set -eoux pipefail
+          DATE=$(date +%Y%m%d)
+          BUILD_TAGS=()
+          if [[ -z "$(git status -s)" ]]; then
+              GIT_SHA=$(git rev-parse --short HEAD)
+              BUILD_TAGS+=("${tag}-${GIT_SHA}")
+              BUILD_TAGS+=("${tag}-${DATE}-${GIT_SHA}")
+              BUILD_TAGS+=("${DATE}-${GIT_SHA}")
+          fi
 
-                       BUILD_TAGS+=("${DATE}")
-                       BUILD_TAGS+=("${tag}")
-                       BUILD_TAGS+=("${tag}-${DATE}")
-
-                       echo "${BUILD_TAGS[@]}""
-
+          BUILD_TAGS+=("${DATE}")
+          BUILD_TAGS+=("${tag}")
+          BUILD_TAGS+=("${tag}-${DATE}")
+          echo "${BUILD_TAGS[@]}""
+          
+          alias_tags="${BUILD_TAGS[@]}"
           echo "Tags for this Action..."
           echo "${alias_tags}"
           echo "alias_tags=${alias_tags}" >> $GITHUB_OUTPUT
