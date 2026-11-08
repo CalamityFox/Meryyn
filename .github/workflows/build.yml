@@ -61,9 +61,11 @@ jobs:
           RUN <<-'EOT' sh
           installRPM=(
            flatpak
+           niri
+          
            )
           dnf5 install -y --nogpgcheck --repofrompath 'terra,https://repos.fyralabs.com/terra$releasever' terra-release
-          dnf5 install -y "${installRPM[@]}"
+          dnf5 install -y --setopt=install_weak_deps=False "${installRPM[@]}"
           EOT
           EOF
 
