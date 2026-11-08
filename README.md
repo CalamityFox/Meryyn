@@ -1,7 +1,7 @@
 <div align="center">
 <img src="misc/media/logo.svg" width="256"/>
 
-**[rpm-ostree](https://coreos.github.io/rpm-ostree)/[bootc](https://bootc.dev) system with [niri](https://github.com/niri-wm/niri) and [noctalia](https://noctalia.dev/shell)**
+**[rpm-ostree](https://coreos.github.io/rpm-ostree)/[bootc](https://bootc.dev) system with [noctalia](https://noctalia.dev)**
 
 [<img src="misc/media/handcoded.png" width="100"/>](https://www.media.mit.edu/publications/your-brain-on-chatgpt)
 [<img src="misc/media/queercoded.png" width="115"/>](https://www.rainbowrailroad.org)
@@ -19,7 +19,7 @@
 <br>
 <br>
 
-`Meryyn` is an atomic/immutable Linux distro based on [Fedora](https://fedoraproject.org). My main priorities are to make it as stable and reliable as possible, while having more private default settings than mainline Fedora and including the [Niri](https://github.com/niri-wm/niri) window manager.
+`Meryyn` is an atomic/immutable Linux distro based on [Fedora](https://fedoraproject.org). My main priorities are to make it as stable and reliable as possible, while having more private default settings than mainline Fedora and including noctalia's [shell](https://noctalia.dev/shell), [greeter](https://noctalia.dev/greeter), and [window manager](https://noctalia.dev/umbriel).
 
 It's a personal project and is not currently ready for use.
 
@@ -73,20 +73,31 @@ Additional software can be installed with [Bazaar](https://apps.gnome.org/Bazaar
 # <img src="misc/media/flower.png" width="20"/> Install <img src="misc/media/flower.png" width="20"/>
 </div>
 
-### Rebasing
+Because `Meryyn` is still in alpha phase, I would strongly urge against installing it on anything other than a VM or testing device, since I may just accidentally brick the whole thing.
 
+## Rebasing
+
+You can rebase from an existing **bootc** or **rpm-ostree** system without completely reinstalling. All your personal files are kept when rebasing.
+
+### Rebasing with **bootc**:
 ```
-# Pin current deployment (not necessary but strongly recommended)
+# Pin your current deployment
 sudo ostree admin pin 0
 
-# Rebase with rpm-ostree:
-rpm-ostree rebase ostree-unverified-registry:ghcr.io/calamityfox/meryyn
-
-# OR rebase with bootc:
+# Rebase to Meryyn
 sudo bootc switch --enforce-container-sigpolicy ghcr.io/calamityfox/meryyn:latest
 ```
 
-### Fresh install
+### Rebasing with **rpm-ostree**:
+```
+# Pin your current deployment
+sudo ostree admin pin 0
+
+# Rebase to Meryyn
+rpm-ostree rebase ostree-unverified-registry:ghcr.io/calamityfox/meryyn
+```
+
+## Fresh install
 ISO builds will happen... at some point. Right now I'm working on other things first
 
 <div align="center">
