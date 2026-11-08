@@ -99,6 +99,9 @@ jobs:
           ]
           EOF
 
+      - name: Pull meryyn:latest
+        run: sudo podman pull calamityfox/meryyn:latest
+
       - name: Build disk images
         id: build
         uses: osbuild/bootc-image-builder-action@028e4d28330efe546229eb9cb52aee78174d2347 # main
