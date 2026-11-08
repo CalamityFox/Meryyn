@@ -179,14 +179,14 @@ jobs:
           BUILD_TAGS=()
           if [[ -z "$(git status -s)" ]]; then
               GIT_SHA=$(git rev-parse --short HEAD)
-              BUILD_TAGS+=("${tag}-${GIT_SHA}")
-              BUILD_TAGS+=("${tag}-${DATE}-${GIT_SHA}")
+              BUILD_TAGS+=("latest-${GIT_SHA}")
+              BUILD_TAGS+=("latest-${DATE}-${GIT_SHA}")
               BUILD_TAGS+=("${DATE}-${GIT_SHA}")
           fi
 
           BUILD_TAGS+=("${DATE}")
-          BUILD_TAGS+=("${tag}")
-          BUILD_TAGS+=("${tag}-${DATE}")
+          BUILD_TAGS+=("latest")
+          BUILD_TAGS+=("latest-${DATE}")
           echo "${BUILD_TAGS[@]}""
           
           alias_tags="${BUILD_TAGS[@]}"
