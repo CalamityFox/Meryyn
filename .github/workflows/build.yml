@@ -193,15 +193,13 @@ jobs:
         run: |
           set -eoux pipefail
           DATE=$(date +%Y%m%d)
-          meryyn-tags="$DATE latest latest-$DATE"
-          echo "meryyn-tags=${meryyn-tags}" >> $GITHUB_OUTPUT
           
           IMAGE=$(podman inspect "meryyn:latest" | jq -r .[].Id)
           podman untag ${IMAGE}
           
-          for tag in ${meryyn-tags}; do 
-            podman tag $IMAGE "${tag}"
-          done
+          podman tag $IMAGE "$DATE"
+          podman tag $IMAGE "latest"
+          podman tag $IMAGE "latest-$DATE"
 
           podman images "$DATE latest latest-$DATE"
 
@@ -218,13 +216,13 @@ jobs:
       - name: Push To GHCR
         if: github.event_name != 'pull_request' && github.ref == format('refs/heads/{0}', github.event.repository.default_branch)
         id: push-image
-        env:
-          meryyn-tags: ${{ steps.image-tags.outputs.meryyn-tags }}
         run: |
           set -euox pipefail
-          for tag in ${meryyn-tags}; do
-            podman push --digestfile=/tmp/digestfile meryyn:${tag} ghcr.io/calamityfox/meryyn:${tag}
-          done
+          DATE=$(date +%Y%m%d)
+
+          podman push --digestfile=/tmp/digestfile meryyn:$DATE ghcr.io/calamityfox/meryyn:$DATE
+          podman push --digestfile=/tmp/digestfile meryyn:latest ghcr.io/calamityfox/meryyn:latest
+          podman push --digestfile=/tmp/digestfile meryyn:latest-$DATE ghcr.io/calamityfox/meryyn:latest-$DATE
 
           digest=$(< /tmp/digestfile)
 
