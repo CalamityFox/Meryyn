@@ -194,7 +194,7 @@ jobs:
           ALIAS_TAGS: ${{ steps.gen-build-tags.outputs.alias_tags }}
         run: |
           set -eoux pipefail
-          IMAGE=$(podman inspect meryyn:latest | jq -r .[].Id)
+          IMAGE=$(podman inspect "meryyn:latest" | jq -r .[].Id)
           podman untag ${IMAGE}
 
           for tag in {{ tags }}; do
