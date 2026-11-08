@@ -187,7 +187,7 @@ jobs:
           BUILD_TAGS+=("${DATE}")
           BUILD_TAGS+=("latest")
           BUILD_TAGS+=("latest-${DATE}")
-          echo "${BUILD_TAGS[@]}""
+          echo "${BUILD_TAGS[@]}"
           
           alias_tags="${BUILD_TAGS[@]}"
           echo "Tags for this Action..."
