@@ -61,11 +61,11 @@ jobs:
           RUN <<-'EOT' sh
           installRPM=(
            age
+           flatpak
            lightdm
            lightdm-gtk-greeter
            niri
            noctalia
-           noctalia-greeter
            tldr
            yt-dlp
            )
