@@ -183,22 +183,24 @@ jobs:
       #    BUILD_TAGS+=("latest-${DATE}")
       #    echo "${BUILD_TAGS[@]}"
           
-      #    alias_tags="${BUILD_TAGS[@]}"
+      #    alias_tags="$DATE latest latest-$DATE"
       #    echo "Tags for this Action..."
       #    echo "${alias_tags}"
       #    echo "alias_tags=${alias_tags}" >> $GITHUB_OUTPUT
 
       - name: Tag Image
-        id: tag-images
+        id: image-tags
         run: |
           set -eoux pipefail
+          alias_tags="$DATE latest latest-$DATE"
+          echo "alias_tags=${alias_tags}" >> $GITHUB_OUTPUT
           DATE=$(date +%Y%m%d)
           IMAGE=$(podman inspect "meryyn:latest" | jq -r .[].Id)
           podman untag ${IMAGE}
           
-          podman tag $IMAGE "meryyn:latest"
-          podman tag $IMAGE "meryyn:$DATE"
-          podman tag $IMAGE "meryyn:latest-$DATE"
+          for tag in ${ALIAS_TAGS}; do 
+            podman tag $IMAGE "${tag}"
+          done
 
           podman images "$DATE latest latest-$DATE"
 
@@ -216,7 +218,7 @@ jobs:
         if: github.event_name != 'pull_request' && github.ref == format('refs/heads/{0}', github.event.repository.default_branch)
         id: push-image
         env:
-          ALIAS_TAGS: ${{ steps.gen-build-tags.outputs.alias_tags }}
+          ALIAS_TAGS: ${{ steps.image-tags.outputs.alias_tags }}
         run: |
           set -euox pipefail
           for tag in ${ALIAS_TAGS}; do
