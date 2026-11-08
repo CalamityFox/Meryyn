@@ -61,10 +61,6 @@ jobs:
           RUN <<-'EOT' sh
           installRPM=(
            flatpak
-           greetd
-           noctalia
-           noctalia-greeter
-           umbriel-nightly
            )
           dnf5 install -y --nogpgcheck --repofrompath 'terra,https://repos.fyralabs.com/terra$releasever' terra-release
           dnf5 install -y "${installRPM[@]}"
