@@ -71,19 +71,19 @@ jobs:
           EOT
           EOF
 
-      - name: Remove RPMs
-        run: |
-          cat <<'EOF' >> Containerfile
-          RUN <<-'EOT' sh
-          removeRPM=(
-           alacritty
-           fuzzel
-           swaylock
-           waybar
-           )
-         # rpm-ostree override remove "${removeRPM[@]}"
-          EOT
-          EOF
+      #- name: Remove RPMs
+      #  run: |
+      #    cat <<'EOF' >> Containerfile
+      #    RUN <<-'EOT' sh
+      #    removeRPM=(
+      #     alacritty
+      #     fuzzel
+      #     swaylock
+      #     waybar
+      #     )
+      #    rpm-ostree override remove "${removeRPM[@]}"
+      #    EOT
+      #    EOF
 
       - name: Install Flatpaks
         run: |
