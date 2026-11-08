@@ -171,14 +171,37 @@ jobs:
           CHUNKED_IMAGE="$(podman pull "oci:${CHUNKAH_OUTPUT_DIR}/chunked")"
           podman tag "${CHUNKED_IMAGE}" "meryyn:latest"
 
-      - name: Tag Image
-        id: tag-images
+      - name: Generate Build Tags
+        id: gen-build-tags
         run: |
           set -eoux pipefail
-          DATE=$(date +%Y%m%d%H%M%S)
+          DATE=$(date +%Y%m%d)
+          BUILD_TAGS=()
+
+          BUILD_TAGS+=("${DATE}")
+          BUILD_TAGS+=("latest")
+          BUILD_TAGS+=("latest-${DATE}")
+          echo "${BUILD_TAGS[@]}"
+          
+          alias_tags="${BUILD_TAGS[@]}"
+          echo "Tags for this Action..."
+          echo "${alias_tags}"
+          echo "alias_tags=${alias_tags}" >> $GITHUB_OUTPUT
+
+      - name: Tag Image
+        id: tag-images
+        env:
+          ALIAS_TAGS: ${{ steps.gen-build-tags.outputs.alias_tags }}
+        run: |
+          set -eoux pipefail
           IMAGE=$(podman inspect meryyn:latest | jq -r .[].Id)
           podman untag ${IMAGE}
-          podman tag $IMAGE "meryyn:$DATE"
+
+          for tag in {{ tags }}; do
+          podman tag $IMAGE "meryyn:latest"
+          done
+
+          podman images "${ALIAS_TAGS}"
 
       # These `if` statements are so that pull requests for your custom images do not make it publish any packages under your name without you knowing
       # They also check if the runner is on the default branch so that things like the merge queue (if you enable it), are going to work
