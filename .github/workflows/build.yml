@@ -127,7 +127,7 @@ jobs:
               GIT_SHA=$(git rev-parse --short HEAD)
               LABELS+=("--label" "io.artifacthub.package.readme-url=https://raw.githubusercontent.com/calamityfox/meryyn/${GIT_SHA}/README.md")
               LABELS+=("--label" "org.opencontainers.image.documentation=https://raw.githubusercontent.com/calamityfox/meryyn/${GIT_SHA}/README.md")
-              LABELS+=("--label" "org.opencontainers.image.source=https://github.com/calamityfox/meryyn/blob/${GIT_SHA}/Containerfile")
+              LABELS+=("--label" "org.opencontainers.image.source=https://github.com/calamityfox/meryyn/blob/${GIT_SHA}/meryyn-config")
               LABELS+=("--label" "org.opencontainers.image.url=https://github.com/calamityfox/meryy/tree/${GIT_SHA}")
               LABELS+=("--label" "org.opencontainers.image.version={{ default_tag }}.$(date +%Y%m%d)-${GIT_SHA}")
           fi
@@ -143,7 +143,33 @@ jobs:
 
       - name: Rechunk with Chunkah
         id: rechunk
-        run: just rechunk meryyn latest
+        run: |
+          set -xeuo pipefail
+
+          # TODO: pin chunkah image to hash once mature enough
+          CHUNKAH_CONFIG_FILE="$(mktemp)"
+
+          CHUNKAH_OUTPUT_DIR="$(mktemp -d ./"meryyn"_chunkah_XXXXXX)"
+
+          trap 'rm -f "${CHUNKAH_CONFIG_FILE}"; rm -rf "${CHUNKAH_OUTPUT_DIR}"' EXIT
+          podman inspect "meryyn:latest" > "${CHUNKAH_CONFIG_FILE}"
+
+          podman run --rm \
+            --mount=type=image,src="meryyn:latest",target=/chunkah \
+            -v "${CHUNKAH_CONFIG_FILE}:/chunkah-config.json:ro,Z" \
+            -v "${CHUNKAH_OUTPUT_DIR}:/run/out:Z" \
+            quay.io/coreos/chunkah:latest \
+            build \
+            --verbose \
+            --compressed \
+            --max-layers 128 \
+            --prune /sysroot/ \
+            --label ostree.commit- --label ostree.final-diffid- \
+            --config /chunkah-config.json \
+            --output oci:/run/out/chunked
+
+          CHUNKED_IMAGE="$(podman pull "oci:${CHUNKAH_OUTPUT_DIR}/chunked")"
+          podman tag "${CHUNKED_IMAGE}" "meryyn:latest"
 
       - name: Generate Build Tags
         id: gen-build-tags
