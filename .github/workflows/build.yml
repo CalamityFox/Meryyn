@@ -63,9 +63,9 @@ jobs:
            flatpak
            greetd
            nautilus
-           niri
            noctalia
            noctalia-greeter
+           umbriel-nightly
            )
           dnf5 install -y --nogpgcheck --repofrompath 'terra,https://repos.fyralabs.com/terra$releasever' terra-release
           dnf5 install -y --setopt=install_weak_deps=False "${installRPM[@]}"
