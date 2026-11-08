@@ -192,6 +192,7 @@ jobs:
         id: tag-images
         run: |
           set -eoux pipefail
+          DATE=$(date +%Y%m%d)
           IMAGE=$(podman inspect "meryyn:latest" | jq -r .[].Id)
           podman untag ${IMAGE}
           
