@@ -61,7 +61,10 @@ jobs:
           RUN <<-'EOT' sh
           installRPM=(
            flatpak
-           niri
+           greetd
+           noctalia
+           noctalia-greeter
+           umbriel-nightly
            )
           dnf5 install -y --nogpgcheck --repofrompath 'terra,https://repos.fyralabs.com/terra$releasever' terra-release
           dnf5 install -y "${installRPM[@]}"
@@ -78,7 +81,7 @@ jobs:
            swaylock
            waybar
            )
-          rpm-ostree override remove "${removeRPM[@]}"
+         # rpm-ostree override remove "${removeRPM[@]}"
           EOT
           EOF
 
