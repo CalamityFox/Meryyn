@@ -50,15 +50,15 @@ It's a personal project and is not currently ready for use.
 
 ### Build process
 
-`Meryyn`'s [**build.yml**](.github/workflows/build.yml) obtains the latest [Silverblue](https://fedoraproject.org/atomic-desktops/silverblue) image and modifies it according to the options laid out in the [**Containerfile**](Containerfile), rechunks it with [Chunkah](https://github.com/coreos/chunkah), and signs it with [Cosign](https://github.com/sigstore/cosign) before uploading it to GitHub's [Container Registry](https://github.blog/news-insights/product-news/introducing-github-container-registry).
+All of `Meryyn`'s code is kept in the [**build.yml**](.github/workflows/build.yml). It pulls [fedora-bootc:latest](https://quay.io/fedora/fedora-bootc) and modifies it according to the meryyn-config, rechunks it with [Chunkah](https://github.com/coreos/chunkah), and signs it with [Cosign](https://github.com/sigstore/cosign) before uploading it to GitHub's [Container Registry](https://github.blog/news-insights/product-news/introducing-github-container-registry).
 
 ### Managing software
 
-I pre-install a few applications like the [LibreWolf](https://librewolf.net) browser, [Thunderbird](https://thunderbird.net) e-mail client, and several [GNOME Core/Circle](https://apps.gnome.org) apps. For a full list of all software included in `Meryyn`, check the [**Containerfile**](Containerfile).
+I pre-install a few applications like the [LibreWolf](https://librewolf.net) browser, [Thunderbird](https://thunderbird.net) e-mail client, and several [GNOME Core/Circle](https://apps.gnome.org) apps. For a full list of all software included in `Meryyn`, check the [**build.yml**](.github/workflows/build.yml).
 
-All GUI apps are installed as Flatpaks and can be removed. Only the display manager, window manager, shell, and a few CLI utilities are part of the base image and cannot be removed without sacrificing system stability.
+All GUI apps are installed as Flatpaks and can be removed. Only the display manager, window manager, and shell, are part of the base image and cannot be removed without sacrificing system stability. Some CLI tools like [age](https://github.com/FiloSottile/age) and [yt-dlp](https://github.com/yt-dlp/yt-dlp) are planned to be installed with [toolbx](https://containertoolbx.org).
 
-Additional software can be installed with [Bazaar](https://apps.gnome.org/Bazaar). If a package isn't available as a [Flatpak](https://flathub.org), you can [layer](https://docs.fedoraproject.org/en-US/atomic-desktops/getting-started/#package-layering) RPMs or use [toolbx](https://containertoolbx.org/).
+Additional software can be installed with [Bazaar](https://apps.gnome.org/Bazaar). If a package isn't available as a [Flatpak](https://flathub.org), you can [layer](https://docs.fedoraproject.org/en-US/atomic-desktops/getting-started/#package-layering) RPMs or use [toolbx](https://containertoolbx.org).
 
 <div align="center">
 <img src="misc/media/divider.gif" width="500"/>
