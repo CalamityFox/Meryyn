@@ -53,7 +53,7 @@ jobs:
         run: |
           cat <<'EOF' >> meryyn-config
           RUN <<-'EOT' sh
-          dnf5 install -y --setopt=install_weak_deps=False cinnamon-desktop gdm
+          dnf5 install -y cinnamon-desktop gdm
           EOT
           EOF
 
