@@ -45,7 +45,7 @@ jobs:
       - name: Download and verify fedora-bootc:latest
         run: |
           cat <<'EOF' > meryyn-config
-          FROM quay.io/fedora/fedora-bootc:latest
+          FROM quay.io/fedora/fedora-silverblue:latest
           RUN bootc container lint
           EOF
 
