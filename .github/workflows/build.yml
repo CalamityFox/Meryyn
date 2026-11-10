@@ -68,30 +68,28 @@ jobs:
           cat <<'EOF' >> meryyn-config
           RUN <<-'EOT' sh
           mkdir -p /usr/share/meryyn/flatpaks
-          installFLATPAK=(
-           app.devsuite.Ptyxis # Terminal
-           app.drey.Warp # File sharing via `magic-wormhole`
-           com.github.johnfactotum.Foliate # E-book reader
-           com.github.tchx84.Flatseal # Flatpak permission manager
-           de.haeckerfelix.Fragments # Torrent client
-           io.github.kolunmi.Bazaar # App store
-           io.gitlab.adhami3310.Impression # ISO flasher
-           io.gitlab.librewolf-community # Browser
-           org.gnome.Calculator # Calculator
-           org.gnome.FileRoller # Archive utility
-           org.gnome.Loupe # Image viewer
-           org.gnome.Papers # Document viewer
-           org.gnome.Showtime # Video player
-           org.gnome.TextEditor # Text editor
-           org.gnome.Weather # Weather
-           org.gnome.World.Iotas # Notes
-           org.gnome.World.PikaBackup # GUI for `borgbackup`
-           org.gnome.World.Secrets # KeePass password manager
-           org.libreoffice.LibreOffice # Office suite
-           org.mozilla.thunderbird # E-mail client
-           )
-          flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
-          flatpak create-usb /usr/share/meryyn/flatpaks "${installFLATPAK[@]}"
+          makeFlatpak="flatpak create-usb /usr/share/meryyn/flatpaks"
+          flatpak add --if-not-exists https://dl.flathub.org/repo/flathub.flatpakrepo
+          $makeFlatpak app.devsuite.Ptyxis
+          $makeFlatpak app.drey.Warp
+          $makeFlatpak com.github.johnfactotum.Foliate
+          $makeFlatpak com.github.tchx84.Flatseal # Flatpak permission manager
+          $makeFlatpak de.haeckerfelix.Fragments # Torrent client
+          $makeFlatpak io.github.kolunmi.Bazaar # App store
+          $makeFlatpak io.gitlab.adhami3310.Impression # ISO flasher
+          $makeFlatpak io.gitlab.librewolf-community # Browser
+          $makeFlatpak org.gnome.Calculator # Calculator
+          $makeFlatpak org.gnome.FileRoller # Archive utility
+          $makeFlatpak org.gnome.Loupe # Image viewer
+          $makeFlatpak org.gnome.Papers # Document viewer
+          $makeFlatpak org.gnome.Showtime # Video player
+          $makeFlatpak org.gnome.TextEditor # Text editor
+          $makeFlatpak org.gnome.Weather # Weather
+          $makeFlatpak org.gnome.World.Iotas # Notes
+          $makeFlatpak org.gnome.World.PikaBackup # GUI for `borgbackup`
+          $makeFlatpak org.gnome.World.Secrets # KeePass password manager
+          $makeFlatpak org.libreoffice.LibreOffice # Office suite
+          $makeFlatpak org.mozilla.thunderbird # E-mail client
           EOT
           EOF
 
