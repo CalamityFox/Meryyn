@@ -62,10 +62,11 @@ jobs:
           EOT
           EOF
 
-      - name: Install Flatpaks
+      - name: Setup Flatpaks
         run: |
           cat <<'EOF' >> meryyn-config
           RUN <<-'EOT' sh
+          mkdir -p /usr/share/meryyn/flatpaks
           installFLATPAK=(
            app.devsuite.Ptyxis # Terminal
            app.drey.Warp # File sharing via `magic-wormhole`
@@ -89,7 +90,7 @@ jobs:
            org.mozilla.thunderbird # E-mail client
            )
           flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
-          flatpak install -y --noninteractive flathub "${installFLATPAK[@]}"
+          flatpak create-usb /usr/share/meryyn/flatpaks flathub -y "${installFLATPAK[@]}"
           EOT
           EOF
 
