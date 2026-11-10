@@ -49,7 +49,7 @@ if [[ $answer == "meryyn" ]]; then
            org.mozilla.thunderbird # E-mail client
            )
           flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
-          flatpak install --noninteractive "${installFLATPAK[@]}"
+          flatpak install --noninteractive flathub "${installFLATPAK[@]}"
           
           echo
           echo -e "  \e[1;5;33mPining current deployment...\e[0m"
