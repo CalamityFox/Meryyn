@@ -91,7 +91,7 @@ jobs:
            org.mozilla.thunderbird # E-mail client
            )
           flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
-          flatpak create-usb /usr/share/meryyn/flatpaks flathub "${installFLATPAK[@]}"
+          flatpak create-usb /usr/share/meryyn/flatpaks "${installFLATPAK[@]}"
           EOT
           EOF
 
