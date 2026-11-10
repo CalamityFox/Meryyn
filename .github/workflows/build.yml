@@ -49,47 +49,39 @@ jobs:
           RUN bootc container lint
           EOF
 
-      - name: Install RPMs
+      - name: Prepare Container
         run: |
           cat <<'EOF' >> meryyn-config
           RUN <<-'EOT' sh
-          installRPM=(
-           cinnamon-desktop
-           niri
-           noctalia
-           )
-          dnf5 install -y --nogpgcheck --repofrompath 'terra,https://repos.fyralabs.com/terra$releasever' terra-release
-          dnf5 install -y --setopt=install_weak_deps=False "${installRPM[@]}"
-          EOT
-          EOF
-
-      - name: Setup Flatpaks
-        run: |
-          cat <<'EOF' >> meryyn-config
-          RUN <<-'EOT' sh
+          dnf5 install -y --setopt=install_weak_deps=False cinnamon-desktop niri noctalia
+          
           mkdir -p /usr/share/meryyn/flatpaks
+
+          flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
+          installFlatpak="flatpak install flathub -y"
           makeFlatpak="flatpak create-usb /usr/share/meryyn/flatpaks"
-          flatpak add --if-not-exists https://dl.flathub.org/repo/flathub.flatpakrepo
-          $makeFlatpak app.devsuite.Ptyxis
-          $makeFlatpak app.drey.Warp
-          $makeFlatpak com.github.johnfactotum.Foliate
-          $makeFlatpak com.github.tchx84.Flatseal # Flatpak permission manager
-          $makeFlatpak de.haeckerfelix.Fragments # Torrent client
-          $makeFlatpak io.github.kolunmi.Bazaar # App store
-          $makeFlatpak io.gitlab.adhami3310.Impression # ISO flasher
-          $makeFlatpak io.gitlab.librewolf-community # Browser
-          $makeFlatpak org.gnome.Calculator # Calculator
-          $makeFlatpak org.gnome.FileRoller # Archive utility
-          $makeFlatpak org.gnome.Loupe # Image viewer
-          $makeFlatpak org.gnome.Papers # Document viewer
-          $makeFlatpak org.gnome.Showtime # Video player
-          $makeFlatpak org.gnome.TextEditor # Text editor
-          $makeFlatpak org.gnome.Weather # Weather
-          $makeFlatpak org.gnome.World.Iotas # Notes
-          $makeFlatpak org.gnome.World.PikaBackup # GUI for `borgbackup`
-          $makeFlatpak org.gnome.World.Secrets # KeePass password manager
-          $makeFlatpak org.libreoffice.LibreOffice # Office suite
-          $makeFlatpak org.mozilla.thunderbird # E-mail client
+          
+          $installFlatpak app.devsuite.Ptyxis && makeFlatpak app.devsuite.Ptyxis
+          $installFlatpak app.drey.Warp && makeFlatpak app.drey.Warp
+          $installFlatpak com.github.johnfactotum.Foliate && makeFlatpak com.github.johnfactotum.Foliate
+          $installFlatpak com.github.tchx84.Flatseal && makeFlatpak com-github.tchx84.Flatseal
+          $installFlatpak de.haeckerfelix.Fragments && makeFlatpak de.haeckerfelix.Fragments
+          $installFlatpak io.github.kolunmi.Bazaar && makeFlatpak io.github.kolunmi.Bazaar
+          $installFlatpak io.gitlab.adhami3310.Impression && makeFlatpak io.gitlab.adhami3310.Impression
+          $installFlatpak io.gitlab.librewolf-community && makeFlatpak io.gitlab.librewolf-community
+          $installFlatpak org.gnome.Calculator && makeFlatpak org.gnome.Calculator
+          $installFlatpak org.gnome.FileRoller && makeFlatpak org.gnome.FileRoller
+          $installFlatpak org.gnome.Loupe && makeFlatpak org.gnome.Loupe
+          $installFlatpak org.gnome.Papers && makeFlatpak org.gnome.Papers
+          $installFlatpak org.gnome.Showtime && makeFlatpak org.gnome.Showtime
+          $installFlatpak org.gnome.TextEditor && makeFlatpak org.gnome.TextEditor
+          $installFlatpak org.gnome.Weather && makeFlatpak org.gnome.Weather
+          $installFlatpak org.gnome.World.Iotas && makeFlatpak org.gnome.World.Iotas
+          $installFlatpak org.gnome.World.PikaBackup && makeFlatpak org.gnome.World.PikaBackup
+          $installFlatpak org.gnome.World.Secrets && makeFlatpak org.gnome.World.Secrets
+          $installFlatpak org.libreoffice.LibreOffice && makeFlatpak org.libreoffice.LibreOffice
+          $installFlatpak org.mozilla.thunderbird && makeFlatpak org.mozilla.thunderbird
+
           EOT
           EOF
 
