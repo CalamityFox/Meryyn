@@ -54,8 +54,9 @@ jobs:
           cat <<'EOF' >> meryyn-config
           RUN <<-'EOT' sh
           installRPM=(
+           cinnamon-desktop
+           niri
            noctalia
-           umbriel-nightly
            )
           dnf5 install -y --nogpgcheck --repofrompath 'terra,https://repos.fyralabs.com/terra$releasever' terra-release
           dnf5 install -y --setopt=install_weak_deps=False "${installRPM[@]}"
@@ -90,7 +91,7 @@ jobs:
            org.mozilla.thunderbird # E-mail client
            )
           flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
-          flatpak create-usb /usr/share/meryyn/flatpaks flathub -y "${installFLATPAK[@]}"
+          flatpak create-usb /usr/share/meryyn/flatpaks flathub "${installFLATPAK[@]}"
           EOT
           EOF
 
