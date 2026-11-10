@@ -53,38 +53,7 @@ jobs:
         run: |
           cat <<'EOF' >> meryyn-config
           RUN <<-'EOT' sh
-          dnf5 install -y --setopt=install_weak_deps=False cinnamon-desktop niri noctalia
-          
-          mkdir -p /usr/share/meryyn/flatpaks
-          flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
-
-          flatpaks=(
-           app.devsuite.Ptyxis
-           app.drey.Warp
-           com.github.johnfactotum.Foliate
-           com.github.tchx84.Flatseal
-           de.haeckerfelix.Fragments
-           io.github.kolunmi.Bazaar
-           io.gitlab.adhami3310.Impression
-           io.gitlab.librewolf-community
-           org.gnome.Calculator
-           org.gnome.FileRoller
-           org.gnome.Loupe
-           org.gnome.Papers
-           org.gnome.Showtime
-           org.gnome.TextEditor
-           org.gnome.Weather
-           org.gnome.World.Iotas
-           org.gnome.World.PikaBackup
-           org.gnome.World.Secrets
-           org.libreoffice.LibreOffice
-           org.mozilla.thunderbird
-           )
-          for app in "${flatpaks[@]}"; do
-          flatpak install flathub -y "$app" && \
-          flatpak create-usb /usr/share/meryyn/flatpaks "$app"
-          done
-
+          dnf5 install -y --setopt=install_weak_deps=False cinnamon-desktop
           EOT
           EOF
 
