@@ -1,56 +1,36 @@
 <div align="center">
 <img src="misc/media/logo.svg" width="256"/>
 
-**[rpm-ostree](https://coreos.github.io/rpm-ostree)/[bootc](https://bootc.dev) system with [noctalia](https://noctalia.dev)**
+**[rpm-ostree](https://coreos.github.io/rpm-ostree)/[bootc](https://bootc.dev) system with [cinnamon](https://github.com/linuxmint/cinnamon)**
 
 [<img src="misc/media/handcoded.png" width="100"/>](https://www.media.mit.edu/publications/your-brain-on-chatgpt)
 [<img src="misc/media/queercoded.png" width="115"/>](https://www.rainbowrailroad.org)
-
-<br>
-
-[<img src="misc/media/readme.png" width="120"/>](README.md#-how-it-works-)
-[<img src="misc/media/install.png" width="120"/>](README.md#-install-)
-[<img src="misc/media/bugreport.png" width="120"/>](https://github.com/CalamityFox/Meryyn/issues)
-[<img src="misc/media/contact.png" width="120"/>](README.md#-contact-)
-
-<img src="misc/media/divider.gif" width="500"/>
-
-<br>
-<br>
-<br>
-
-`Meryyn` is an atomic/immutable Linux distro based on [Fedora](https://fedoraproject.org). My main priorities are to make it as stable and reliable as possible, while having more private default settings than mainline Fedora and including noctalia's [shell](https://noctalia.dev/shell), [greeter](https://noctalia.dev/greeter), and [window manager](https://noctalia.dev/umbriel).
-
-It's a personal project and is not currently ready for use.
-
-<br>
-<br>
-
-<img src="misc/media/divider.gif" width="500"/>
-
-<br>
-<br>
-
-<img src="misc/media/terminallyonline.gif" width="220"/>
-<img src="misc/media/gendermalware.gif" width="220"/>
-<img src="misc/media/ancientinternetcreature.gif" width="220"/>
-<img src="misc/media/disabledpride.gif" width="220"/>
-<img src="misc/media/sourcecodeforlife.gif" width="220"/> 
-<img src="misc/media/dontrushme.gif" width="220"/>
 </div>
 
 <br>
-<br>
+
+ALPHA PROJECT, ABSOLUTELY DOES NOT WORK PLEASE DON'T USE SERIOUSLY IT WILL BREAK IN 5 MINUTES PROBABLY
+
+`Meryyn` is an atomic/immutable Linux distro based on [Fedora](https://fedoraproject.org). My main priorities are to make it as stable and reliable as possible, while having more private default settings than mainline Fedora and including the [Cinnamon](https://github.com/linuxmint/cinnamon) desktop.
+
 <br>
 
-<div align="center">
+### Installation
 
-# <img src="misc/media/flower.png" width="20"/> How it works <img src="misc/media/flower.png" width="20"/>
-</div>
+You can rebase from an existing ostree/bootc system:
+
+```
+curl https://github.com/CalamityFox/Meryyn/raw/refs/heads/main/meryyn-helper.sh
+chmod +x helper.sh
+meryyn-helper.sh
+```
+<br>
 
 ### Build process
 
 All of `Meryyn`'s code is kept in the [**build.yml**](.github/workflows/build.yml). It pulls [fedora-bootc:latest](https://quay.io/fedora/fedora-bootc) and modifies it according to the meryyn-config, rechunks it with [Chunkah](https://github.com/coreos/chunkah), and signs it with [Cosign](https://github.com/sigstore/cosign) before uploading it to GitHub's [Container Registry](https://github.blog/news-insights/product-news/introducing-github-container-registry).
+
+<br>
 
 ### Managing software
 
@@ -60,71 +40,30 @@ All GUI apps are installed as Flatpaks and can be removed. Only the display mana
 
 Additional software can be installed with [Bazaar](https://apps.gnome.org/Bazaar). If a package isn't available as a [Flatpak](https://flathub.org), you can [layer](https://docs.fedoraproject.org/en-US/atomic-desktops/getting-started/#package-layering) RPMs or use [toolbx](https://containertoolbx.org).
 
-<div align="center">
-<img src="misc/media/divider.gif" width="500"/>
-</div>
-
-<br>
-<br>
 <br>
 
-<div align="center">
+### Installation
 
-# <img src="misc/media/flower.png" width="20"/> Install <img src="misc/media/flower.png" width="20"/>
-</div>
+You can rebase from a fresh [Silverblue](silverblue.fedoraproject.org) or other ostree/bootc system:
 
-Because `Meryyn` is still in alpha phase, I would strongly urge against installing it on anything other than a VM or testing device, since I may just accidentally brick the whole thing.
-
-## Rebasing
-
-You can rebase from an existing **bootc** or **rpm-ostree** system without completely reinstalling. All your personal files are kept when rebasing.
-
-### Rebasing with **bootc**:
 ```
-# Pin your current deployment
-sudo ostree admin pin 0
-
-# Rebase to Meryyn
-sudo bootc switch --enforce-container-sigpolicy ghcr.io/calamityfox/meryyn:latest
+curl https://github.com/CalamityFox/Meryyn/raw/refs/heads/main/meryyn-helper.sh
+chmod +x helper.sh
+meryyn-helper.sh
 ```
 
-### Rebasing with **rpm-ostree**:
-```
-# Pin your current deployment
-sudo ostree admin pin 0
 
-# Rebase to Meryyn
-rpm-ostree rebase ostree-unverified-registry:ghcr.io/calamityfox/meryyn
-```
-
-## Fresh install
-ISO builds will happen... at some point. Right now I'm working on other things first
-
-<div align="center">
-<img src="misc/media/divider.gif" width="500"/>
-</div>
-
-<br>
-<br>
-<br>
 
 <div align="center">
 
-# <img src="misc/media/flower.png" width="20"/> Contact <img src="misc/media/flower.png" width="20"/>
-</div>
+[*calamityfox@purelymail.com*](mailto:calamityfox@purelymail.com) ([**age**](misc/keys/public-key.age), [**gpg**](misc/keys/public-key.gpg))
 
-If you encounter a bug, please report it in the [Issue Tracker](issues).
+#
 
-For anything else, including security/vulnerability disclosures, contact me at [calamityfox@purelymail.com](mailto:calamityfox@purelymail.com).
-
-You can encrypt your message with my [**age**](misc/public-key.age) or [**gpg**](misc/public-key.gpg) public keys. If you encrypt your message, please include your own **age** or **gpg** public key (either as an attachment or a link to a keyserver), or I won't be able to send a reply without falling back to plaintext.
-
-You can also message me on [Signal](https://signal.org). My username is [`kes.123`](https://signal.me/#eu/nM5aRSJ1kqOL0RtXQHOtgxqk6S5baJuLUNf4RxV1cu1ZIYaKd_dNBIZPvKpvRRZO).
-
-I'll do my best to reply to any messages as soon as possible.
-
-If your issue is related to a third-party package that `Meryyn` uses, please prioritize contacting the developer of that package directly. Any vulnerable packages in `Meryyn` would be disabled until a fix is published.
-
-<div align="center">
-<img src="misc/media/divider.gif" width="500"/>
+<img src="misc/media/terminallyonline.gif" width="220"/>
+<img src="misc/media/gendermalware.gif" width="220"/>
+<img src="misc/media/ancientinternetcreature.gif" width="220"/>
+<img src="misc/media/disabledpride.gif" width="220"/>
+<img src="misc/media/sourcecodeforlife.gif" width="220"/> 
+<img src="misc/media/dontrushme.gif" width="220"/>
 </div>
