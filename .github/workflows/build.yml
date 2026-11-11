@@ -57,7 +57,7 @@ jobs:
            nemo
            )
           dnf5 install -y "${RPM[@]}"
-          RUN bootc container lint
+          bootc container lint
           EOT
           EOF
 
