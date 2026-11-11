@@ -48,13 +48,7 @@ jobs:
           FROM quay.io/fedora/fedora-silverblue:latest
           RUN <<-'EOT' sh
           RPM=(
-           cinnamon
-           cinnamon-control-cener
-           cinnamon-desktop
-           cinnamon-session
-           cinnamon-settings-daemon
-           muffin
-           nemo
+           @cinnamon-desktop-environment
            )
           dnf5 install -y "${RPM[@]}"
           bootc container lint

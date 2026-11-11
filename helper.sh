@@ -57,6 +57,9 @@ if [[ $answer == "meryyn" ]]; then
           echo
           echo -e "  \e[1;5;33mRebasing to \e[1;5;96mmeryyn:latest\e[0m"
           rpm-ostree rebase ostree-unverified-registry:ghcr.io/calamityfox/meryyn
+          echo -e "  \e[1;5;33mRebooting: Switching to \e[1;5;96mMeryyn\e[0m"
+          rm helper.sh
+          systemctl reboot
 else
     echo
     echo -e "  \e[1;5;91mOPERATION CANCELLED BY USER\e[0m"
