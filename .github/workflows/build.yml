@@ -48,7 +48,19 @@ jobs:
           FROM quay.io/fedora/fedora-bootc:latest
           RUN <<-'EOT' sh
           RPM=(
-           @cinnamon-desktop-environment
+           cinnamon-control-center
+           cinnamon-desktop
+           cinnamon-screensaver
+           cinnamon-session
+           cinnamon-settings-daemon
+           cjs
+           lightdm
+           lightdm-settings
+           muffin
+           nemo
+           slick-greeter
+           xapps
+           xdg-desktop-portal-xapp
            
            b43-fwcutter
            b43-openfwwf
@@ -71,9 +83,8 @@ jobs:
            flatpak
            plymouth
            rsync
-           slick-greeter
            )
-          dnf5 install -y "${RPM[@]}"
+          dnf5 install -y --setopt=install_weak_deps=False "${RPM[@]}"
 
           removeRPM=(
            eom
@@ -91,7 +102,7 @@ jobs:
            xreader
            zoitechat
            )
-          rpm-ostree override remove "${removeRPM[@]}"
+          # rpm-ostree override remove "${removeRPM[@]}"
 
 
 
