@@ -45,12 +45,57 @@ jobs:
       - name: Prepare Container
         run: |
           cat <<'EOF' >> meryyn-config
-          FROM quay.io/fedora/fedora-silverblue:latest
+          FROM quay.io/fedora/fedora-bootc:latest
           RUN <<-'EOT' sh
           RPM=(
            @cinnamon-desktop-environment
+           
+           b43-fwcutter
+           b43-openfwwf
+           
+           iwlbluetooth-firmware
+           iwlegacy-firmware
+           iwlwifi-dvm-firmware
+           iwlwifi-mld-firmware
+           iwlwifi-mvm-firmware
+           
+           kernel-modules-extra-7.2.15-300.fc45.x86_64
+           kernel-tools-7.2.15-300.fc45.x86_64
+           kernel-tools-libs-7.2.15-300.fc45.x86_64
+           
+           langpacks-core-en-4.3-3.fc45.noarch
+           langpacks-en-4.3-3.fc45.noarch
+           langpacks-fonts-en-4.3-3.fc45.noarch
+           langtable-0.0.71-2.fc45.noarch
+           
+           flatpak
+           plymouth
+           rsync
+           slick-greeter
            )
           dnf5 install -y "${RPM[@]}"
+
+          removeRPM=(
+           eom
+           gucharmap
+           mintlocale
+           mpv
+           pidgin
+           simple-scan
+           shotwell
+           thunderbird
+           transmission-gtk
+           xawtv
+           xed
+           xfburn
+           xreader
+           zoitechat
+           )
+          rpm-ostree override remove "${removeRPM[@]}"
+
+
+
+
           bootc container lint
           EOT
           EOF
