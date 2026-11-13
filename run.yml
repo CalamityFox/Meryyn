@@ -106,6 +106,7 @@ jobs:
           # rpm-ostree override remove "${removeRPM[@]}"
 
           mkdir -p /usr/share/icons/
+          dnf5 list installed
           curl "https://github.com/CalamityFox/Meryyn/tree/main/system files/Neuwaita" \ 
           > /usr/share/icons
 
