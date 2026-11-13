@@ -50,8 +50,6 @@ jobs:
 
           removeRPM=(
            eom
-           gucharmap
-           mintlocale
            mpv
            pidgin
            simple-scan
