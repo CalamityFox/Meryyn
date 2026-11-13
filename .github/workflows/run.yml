@@ -64,14 +64,7 @@ jobs:
            xreader
            zoitechat
            )
-          rpm-ostree override remove "${removeRPM[@]}"
-
-          mkdir -p /usr/share/icons/
-          curl "https://github.com/CalamityFox/Meryyn/tree/main/system files/Neuwaita" \ 
-          > /usr/share/icons
-          
-          ls /usr/share/icons
-
+          dnf5 remove -y "${removeRPM[@]}"
 
           bootc container lint
           EOT
@@ -79,7 +72,7 @@ jobs:
 
       - name: Build Container
         run: |
-          set -euox pipefail
+          set -euo pipefail
           podman build \
           --pull=newer \
           --tag "meryyn:latest" \
@@ -88,7 +81,7 @@ jobs:
       - name: Rechunk w. Chunkah
         id: rechunk
         run: |
-          set -xeuo pipefail
+          set -eou pipefail
 
           # pin chunkah image to hash once mature enough
           CHUNKAH_CONFIG_FILE="$(mktemp)"
@@ -117,7 +110,7 @@ jobs:
 
       - name: Tag Image
         run: |
-         set -eoux pipefail
+         set -eou pipefail
          DATE=$(date +%Y%m%d)
 
          podman tag meryyn:latest "meryyn:${DATE}"
@@ -136,7 +129,7 @@ jobs:
         if: github.event_name != 'pull_request' && github.ref == format('refs/heads/{0}', github.event.repository.default_branch)
         id: push-image
         run: |
-          set -euox pipefail
+          set -eou pipefail
           DATE=$(date +%Y%m%d)
 
           podman push --digestfile=/tmp/digestfile meryyn:$DATE ghcr.io/calamityfox/meryyn:$DATE
