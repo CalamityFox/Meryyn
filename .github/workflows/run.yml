@@ -71,6 +71,7 @@ jobs:
       - name: Build Container
         run: |
           set -euo pipefail
+          DATE=$(date +%Y%m%d)
           buildah bud \
           --pull=newer \
           --tag "meryyn:latest" \
@@ -120,20 +121,27 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+
       - name: Push To GHCR
-        if: github.event_name != 'pull_request' && github.ref == format('refs/heads/{0}', github.event.repository.default_branch)
         id: push-image
+        if: github.event_name != 'pull_request' && github.ref == format('refs/heads/{0}', github.event.repository.default_branch)
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          set -eoux pipefail
-          DATE=$(date +%Y%m%d)
+         set -eoux pipefail
+         DATE=$(date +%Y%m%d)
 
-          podman push --digestfile=/tmp/digestfile meryyn:$DATE ghcr.io/calamityfox/meryyn:$DATE
-          podman push --digestfile=/tmp/digestfile meryyn:latest ghcr.io/calamityfox/meryyn:latest
-          podman push --digestfile=/tmp/digestfile meryyn:latest-$DATE ghcr.io/calamityfox/meryyn:latest-$DATE
+         printenv GITHUB_TOKEN | podman login ghcr.io \
+          -u "${{ github.actor }}" --password-stdin
 
+         digest=""
+         for tag in "$DATE" latest "latest-$DATE"; do
+          podman push --digestfile=/tmp/digestfile \
+            "meryyn:$tag" "ghcr.io/calamityfox/meryyn:$tag"
           digest=$(< /tmp/digestfile)
+         done
 
-          echo "digest=${digest}" >> $GITHUB_OUTPUT
+         echo "digest=$digest" >> "$GITHUB_OUTPUT"
 
       - name: Install Cosign
         uses: sigstore/cosign-installer@6f9f17788090df1f26f669e9d70d6ae9567deba6 # v4.1.2
