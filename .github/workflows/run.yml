@@ -71,28 +71,26 @@ jobs:
       - name: Build Container
         run: |
           set -euo pipefail
-          podman build \
+          buildah bud \
           --pull=newer \
           --tag "meryyn:latest" \
+          --tag "meryyn:$DATE" \
+          --tag "meryyn:latest-$DATE" \
           --file meryyn-config .
 
-      - name: Rechunk w. Chunkah
-        id: rechunk
+      - name: Rechunk Image w. Chunkah
         run: |
-          set -eou pipefail
+          set -eoux pipefail
 
-          # pin chunkah image to hash once mature enough
-          CHUNKAH_CONFIG_FILE="$(mktemp)"
+          WORK_DIR="$(mktemp -d ./meryyn_chunkah_XXXXXX)"
+          trap 'rm -rf "$WORK_DIR"' EXIT
 
-          CHUNKAH_OUTPUT_DIR="$(mktemp -d ./"meryyn"_chunkah_XXXXXX)"
-
-          trap 'rm -f "${CHUNKAH_CONFIG_FILE}"; rm -rf "${CHUNKAH_OUTPUT_DIR}"' EXIT
-          podman inspect "meryyn:latest" > "${CHUNKAH_CONFIG_FILE}"
+          podman inspect meryyn:latest > "$WORK_DIR/chunkah-config.json"
 
           podman run --rm \
-            --mount=type=image,src="meryyn:latest",target=/chunkah \
-            -v "${CHUNKAH_CONFIG_FILE}:/chunkah-config.json:ro,Z" \
-            -v "${CHUNKAH_OUTPUT_DIR}:/run/out:Z" \
+            --mount=type=image,src=meryyn:latest,target=/chunkah \
+            -v "$WORK_DIR/chunkah-config.json:/chunkah-config.json:ro,Z" \
+            -v "$WORK_DIR/out:/run/out:Z" \
             quay.io/coreos/chunkah:latest \
             build \
             --verbose \
@@ -103,12 +101,11 @@ jobs:
             --config /chunkah-config.json \
             --output oci:/run/out/chunked
 
-          CHUNKED_IMAGE="$(podman pull "oci:${CHUNKAH_OUTPUT_DIR}/chunked")"
-          podman tag "${CHUNKED_IMAGE}" "meryyn:latest"
+          podman tag "$(podman pull "oci:$WORK_DIR/out/chunked")" meryyn:latest
 
       - name: Tag Image
         run: |
-         set -eou pipefail
+         set -eoux pipefail
          DATE=$(date +%Y%m%d)
 
          podman tag meryyn:latest "meryyn:${DATE}"
@@ -127,7 +124,7 @@ jobs:
         if: github.event_name != 'pull_request' && github.ref == format('refs/heads/{0}', github.event.repository.default_branch)
         id: push-image
         run: |
-          set -eou pipefail
+          set -eoux pipefail
           DATE=$(date +%Y%m%d)
 
           podman push --digestfile=/tmp/digestfile meryyn:$DATE ghcr.io/calamityfox/meryyn:$DATE
